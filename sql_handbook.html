@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Handbook — DS/DA/PA/BA Interview Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;600&family=Mulish:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060a10;--surface:#0d1520;--surface2:#111d2e;--border:#1a2840;
+  --text:#dde8f5;--muted:#4a6280;--accent:#00d4ff;--accent2:#ff6b35;
+  --green:#00e676;--red:#ff4444;--yellow:#ffd740;--purple:#bb86fc;
+  --orange:#ff9800;--pink:#f06292;--teal:#26c6da;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Mulish',sans-serif;font-size:14.5px;line-height:1.75}
+
+/* NAV */
+.topnav{position:sticky;top:0;z-index:200;background:rgba(6,10,16,.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0;overflow-x:auto;padding:0 20px}
+.topnav a{color:var(--muted);text-decoration:none;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.5px;white-space:nowrap;padding:14px 14px;border-right:1px solid var(--border);transition:all .15s}
+.topnav a:hover{color:var(--accent);background:rgba(0,212,255,.04)}
+.topnav .logo{color:var(--accent);font-weight:700;font-size:13px;padding-right:20px;border-right:1px solid var(--border);white-space:nowrap;font-family:'JetBrains Mono',monospace}
+
+/* HERO */
+.hero{padding:60px 40px 52px;border-bottom:1px solid var(--border);position:relative;overflow:hidden;background:linear-gradient(160deg,#060a10 60%,#0a1525 100%)}
+.hero::before{content:'SQL';position:absolute;right:-20px;top:-10px;font-family:'Fraunces',serif;font-size:240px;font-weight:900;color:rgba(0,212,255,.03);pointer-events:none;line-height:1}
+.hero-chip{display:inline-flex;align-items:center;gap:8px;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:20px;text-transform:uppercase}
+.hero h1{font-family:'Fraunces',serif;font-size:clamp(34px,5vw,68px);font-weight:900;line-height:1.05;margin-bottom:14px;letter-spacing:-1px}
+.hero h1 em{color:var(--accent);font-style:normal}
+.hero p{color:var(--muted);max-width:620px;font-size:15px;line-height:1.7}
+.hero-stats{display:flex;flex-wrap:wrap;gap:0;margin-top:36px;border:1px solid var(--border);border-radius:5px;overflow:hidden;width:fit-content}
+.hstat{padding:14px 24px;border-right:1px solid var(--border);text-align:center}
+.hstat:last-child{border-right:none}
+.hstat-n{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--accent);display:block}
+.hstat-l{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+
+/* LAYOUT */
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px 100px}
+
+/* SECTION HEADERS */
+.mod{margin-top:60px;scroll-margin-top:20px}
+.mod-hd{display:flex;align-items:center;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:24px}
+.mod-num{width:46px;height:46px;background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;border-radius:4px;flex-shrink:0}
+.mod-title{font-family:'Fraunces',serif;font-size:26px;font-weight:700;line-height:1.1}
+.mod-sub{font-size:13px;color:var(--muted);margin-top:2px}
+
+/* CONCEPT CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:7px;margin-bottom:18px;overflow:hidden}
+.card-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--border);gap:12px;flex-wrap:wrap}
+.card-title{font-size:15px;font-weight:700;font-family:'Fraunces',serif}
+.card-body{padding:20px 22px}
+
+/* TAGS */
+.tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-family:'JetBrains Mono',monospace;font-size:10px;padding:3px 9px;border-radius:20px;letter-spacing:.3px}
+.t-must{background:rgba(0,214,255,.12);color:var(--accent);border:1px solid rgba(0,214,255,.3)}
+.t-hard{background:rgba(255,68,68,.1);color:var(--red);border:1px solid rgba(255,68,68,.3)}
+.t-med{background:rgba(255,215,64,.1);color:var(--yellow);border:1px solid rgba(255,215,64,.3)}
+.t-easy{background:rgba(0,230,118,.1);color:var(--green);border:1px solid rgba(0,230,118,.3)}
+.t-faang{background:rgba(187,134,252,.12);color:var(--purple);border:1px solid rgba(187,134,252,.3)}
+.t-adv{background:rgba(255,107,53,.1);color:var(--accent2);border:1px solid rgba(255,107,53,.3)}
+.t-prod{background:rgba(240,98,146,.1);color:var(--pink);border:1px solid rgba(240,98,146,.3)}
+
+/* CALL-OUT BOXES */
+.analogy,.warn,.tip,.int-alert,.key-insight,.business-case{border-radius:4px;padding:14px 18px;margin:14px 0;font-size:13.5px}
+.analogy{background:rgba(0,212,255,.05);border:1px solid rgba(0,212,255,.18);border-left:3px solid var(--accent)}
+.analogy strong,.warn strong,.tip strong,.int-alert strong,.key-insight strong,.business-case strong{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.analogy strong{color:var(--accent)}
+.warn{background:rgba(255,68,68,.05);border:1px solid rgba(255,68,68,.2);border-left:3px solid var(--red)}
+.warn strong{color:var(--red)}
+.tip{background:rgba(0,230,118,.05);border:1px solid rgba(0,230,118,.18);border-left:3px solid var(--green)}
+.tip strong{color:var(--green)}
+.int-alert{background:rgba(255,215,64,.05);border:1px solid rgba(255,215,64,.2);border-left:3px solid var(--yellow)}
+.int-alert strong{color:var(--yellow)}
+.int-alert ul{list-style:none}
+.int-alert ul li{padding:3px 0;display:flex;gap:8px}
+.int-alert ul li::before{content:'▶';color:var(--yellow);font-size:9px;flex-shrink:0;margin-top:4px}
+.key-insight{background:rgba(187,134,252,.06);border:1px solid rgba(187,134,252,.2);border-left:3px solid var(--purple)}
+.key-insight strong{color:var(--purple)}
+.business-case{background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.2);border-left:3px solid var(--accent2)}
+.business-case strong{color:var(--accent2)}
+
+/* CODE */
+.code-block{background:#020810;border:1px solid var(--border);border-radius:6px;margin:12px 0;overflow:hidden}
+.code-top{background:var(--surface2);border-bottom:1px solid var(--border);padding:8px 16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.code-top span{color:var(--green)}
+pre{padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.75;overflow-x:auto;tab-size:4}
+
+/* Syntax */
+.kw{color:#ff79c6}.fn{color:#50fa7b}.st{color:#f1fa8c}.cm{color:#6272a4;font-style:italic}
+.tb{color:#8be9fd}.op{color:#ffb86c}.num{color:#bd93f9}.al{color:#ff5555}
+.out{color:#50fa7b}
+
+/* RESULT TABLE */
+.rtbl{width:100%;border-collapse:collapse;margin:10px 0;font-size:12.5px;font-family:'JetBrains Mono',monospace}
+.rtbl th{background:var(--surface2);color:var(--accent);padding:9px 14px;text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;border:1px solid var(--border)}
+.rtbl td{padding:8px 14px;border:1px solid var(--border);color:#a8c5e8}
+.rtbl tr:hover td{background:rgba(255,255,255,.02)}
+.rtbl .hl{color:var(--green)}
+.rtbl .nl{color:var(--red);font-style:italic}
+
+/* COMPARISON TABLE */
+.ctbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
+.ctbl th{background:var(--surface2);padding:10px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+.ctbl td{padding:10px 14px;border-bottom:1px solid rgba(26,40,64,.5);color:#a8c5e8;vertical-align:top}
+.ctbl code{font-family:'JetBrains Mono',monospace;font-size:11px;background:rgba(255,255,255,.06);padding:1px 6px;border-radius:3px;color:var(--teal)}
+
+/* PRACTICE */
+.practice{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:24px;margin-top:28px}
+.practice h3{font-size:14px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px;color:var(--accent);font-family:'Fraunces',serif}
+.pq{background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:14px 18px;margin-bottom:8px;font-size:13px;display:flex;gap:12px;align-items:flex-start}
+.pqn{background:var(--accent);color:#000;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:2px 8px;border-radius:2px;flex-shrink:0;margin-top:2px}
+.pqn.h{background:var(--red);color:#fff}
+.pqn.m{background:var(--yellow);color:#000}
+.pq-company{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--purple);margin-left:auto;flex-shrink:0;padding-top:2px}
+
+/* EXECUTION ORDER */
+.exec-order{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:14px 0}
+.exec-step{display:flex;align-items:stretch;gap:0;border-bottom:1px solid var(--border)}
+.exec-step:last-child{border-bottom:none}
+.exec-n{width:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;border-right:1px solid var(--border);background:var(--surface2)}
+.exec-content{padding:12px 20px;flex:1}
+.exec-content strong{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent)}
+.exec-content span{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.exec-note{padding:12px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);border-left:1px solid var(--border);display:flex;align-items:center;white-space:nowrap;background:var(--surface)}
+
+/* JOIN VISUAL */
+.join-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin:14px 0}
+.join-card{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:16px;text-align:center}
+.join-venn{font-size:32px;margin-bottom:8px}
+.join-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:4px}
+.join-desc{font-size:11.5px;color:var(--muted)}
+
+/* CHEAT SHEET */
+.cheat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin:14px 0}
+.cheat-box{background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:18px}
+.cheat-box h4{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.cheat-box ul{list-style:none}
+.cheat-box ul li{font-family:'JetBrains Mono',monospace;font-size:11.5px;padding:3px 0;color:#a8c5e8;display:flex;gap:8px}
+.cheat-box ul li::before{content:'›';color:var(--muted)}
+
+/* STEP SOLUTION */
+.solution{background:var(--surface);border:1px solid var(--border);border-radius:6px;margin:14px 0;overflow:hidden}
+.sol-hd{background:rgba(0,230,118,.06);border-bottom:1px solid var(--border);padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--green);letter-spacing:1px;text-transform:uppercase}
+.sol-steps{padding:16px 20px}
+.sol-step{display:flex;gap:14px;padding:8px 0;border-bottom:1px solid rgba(26,40,64,.5);font-size:13px}
+.sol-step:last-child{border-bottom:none}
+.sol-num{color:var(--green);font-family:'JetBrains Mono',monospace;font-weight:700;flex-shrink:0}
+
+/* PATTERN CARD */
+.pattern-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;margin-bottom:18px;overflow:hidden}
+.pattern-head{background:linear-gradient(135deg,rgba(0,212,255,.08),rgba(187,134,252,.08));border-bottom:1px solid var(--border);padding:18px 22px;display:flex;align-items:center;gap:14px}
+.pattern-icon{font-size:28px}
+.pattern-name{font-family:'Fraunces',serif;font-size:18px;font-weight:700}
+.pattern-desc{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* WINDOW FUNCTION DIAGRAM */
+.wf-diagram{background:#020810;border:1px solid var(--border);border-radius:6px;padding:20px;margin:14px 0;font-family:'JetBrains Mono',monospace;font-size:12px}
+.wf-row{display:flex;gap:0;margin:3px 0}
+.wf-cell{padding:6px 12px;border:1px solid var(--border);min-width:80px;text-align:center}
+.wf-cell.header{background:var(--surface2);color:var(--accent);font-size:10px;letter-spacing:1px}
+.wf-cell.partition{background:rgba(0,212,255,.08);color:#8be9fd}
+.wf-cell.highlight{background:rgba(0,230,118,.1);color:var(--green)}
+.wf-cell.result{background:rgba(187,134,252,.08);color:var(--purple)}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:28px 0}
+
+@media(max-width:640px){
+  .hero{padding:36px 20px}
+  .wrap{padding:0 16px 60px}
+  .topnav{display:none}
+  .code-block pre{font-size:11px}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV -->
+<div class="topnav">
+  <span class="logo">SQL Handbook</span>
+  <a href="#m0">Execution</a><a href="#m1">SELECT</a><a href="#m2">Aggregations</a>
+  <a href="#m3">CASE WHEN</a><a href="#m4">JOINs</a><a href="#m5">Subqueries</a>
+  <a href="#m6">CTEs</a><a href="#m7">Window Fns</a><a href="#m8">Dates&Strings</a>
+  <a href="#m9">NULLs</a><a href="#m10">Analytics</a><a href="#m11">Product SQL</a>
+  <a href="#m12">Hard Problems</a><a href="#m13">Cheat Sheet</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-chip">📊 Industry-Grade · DA · DS · PA · BA Interviews</div>
+  <h1>The Complete<br><em>SQL Handbook</em></h1>
+  <p>From SELECT to advanced window functions, cohort analysis and FAANG-style problems. Every concept taught with intuition, business context, interview traps, and step-by-step solutions.</p>
+  <div class="hero-stats">
+    <div class="hstat"><span class="hstat-n">13</span><span class="hstat-l">Modules</span></div>
+    <div class="hstat"><span class="hstat-n">80+</span><span class="hstat-l">Concepts</span></div>
+    <div class="hstat"><span class="hstat-n">60+</span><span class="hstat-l">Problems</span></div>
+    <div class="hstat"><span class="hstat-n">FAANG</span><span class="hstat-l">Level</span></div>
+    <div class="hstat"><span class="hstat-n">🇮🇳</span><span class="hstat-l">India First</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ========== DATASETS ========== -->
+<div class="mod" style="margin-top:40px">
+  <div class="key-insight">
+    <strong>📦 Our Datasets — Used Throughout This Entire Handbook</strong>
+    <p>We use four realistic tables that mirror what you'll see in real companies. Every SQL concept is taught on these same tables so your brain builds one coherent mental model.</p>
+  </div>
+  <div class="code-block">
+    <div class="code-top">schema.sql — Four tables, one company (Indian Ed-Tech platform like Unacademy/Byju's)</div>
+    <pre><span class="cm">-- USERS TABLE</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">users</span> (
+  user_id    INT, name VARCHAR(<span class="num">50</span>), city VARCHAR(<span class="num">30</span>),
+  plan       VARCHAR(<span class="num">20</span>),   <span class="cm">-- 'free', 'basic', 'pro'</span>
+  joined_at  DATE,          age INT
+);
+<span class="cm">-- Sample: (1,'Ananya','Mumbai','pro','2023-01-10',24), (2,'Rohan','Delhi','free','2023-02-15',28)...</span>
+
+<span class="cm">-- ORDERS TABLE</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">orders</span> (
+  order_id   INT, user_id INT, course_id INT,
+  amount     DECIMAL(<span class="num">10</span>,<span class="num">2</span>), discount_pct INT,
+  status     VARCHAR(<span class="num">20</span>), <span class="cm">-- 'completed','refunded','pending'</span>
+  ordered_at TIMESTAMP
+);
+
+<span class="cm">-- EVENTS TABLE (product analytics)</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">events</span> (
+  event_id   INT, user_id INT, event_type VARCHAR(<span class="num">50</span>),
+  <span class="cm">-- event_type: 'signup','login','lesson_start','lesson_complete','purchase','churn'</span>
+  event_at   TIMESTAMP, properties JSONB
+);
+
+<span class="cm">-- COURSES TABLE</span>
+<span class="kw">CREATE TABLE</span> <span class="tb">courses</span> (
+  course_id INT, title VARCHAR(<span class="num">100</span>), category VARCHAR(<span class="num">50</span>),
+  price DECIMAL(<span class="num">10</span>,<span class="num">2</span>), instructor VARCHAR(<span class="num">50</span>)
+);</pre>
+  </div>
+</div>
+
+<!-- ========== MODULE 0 — EXECUTION ORDER ========== -->
+<div class="mod" id="m0">
+  <div class="mod-hd">
+    <div class="mod-num">00</div>
+    <div><div class="mod-title">The #1 Thing Nobody Teaches — SQL Execution Order</div>
+    <div class="mod-sub">Why your WHERE can't use aliases. Why HAVING exists. All explained here.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">How SQL Actually Processes Your Query</div><div class="tags"><span class="tag t-must">Critical Foundation</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>Analogy</strong>You write SQL top to bottom. SQL executes it in a completely different order. It's like writing an essay — you write the title first but the reader understands the conclusion only after reading the body. Knowing this order explains every confusing error you've ever seen.</div>
+      <div class="exec-order">
+        <div class="exec-step"><div class="exec-n" style="color:var(--red)">1</div><div class="exec-content"><strong>FROM / JOIN</strong><span>Build the full table — bring all data together from all tables</span></div><div class="exec-note">Tables assembled here</div></div>
+        <div class="exec-step"><div class="exec-n" style="color:var(--orange)">2</div><div class="exec-content"><strong>WHERE</strong><span>Filter individual rows — before any grouping happens</span></div><div class="exec-note">Row-level filter</div></div>
+        <div class="exec-step"><div class="exec-n" style="color:var(--yellow)">3</div><div class="exec-content"><strong>GROUP BY</strong><span>Bucket rows into groups by specified columns</span></div><div class="exec-note">Grouping here</div></div>
+        <div class="exec-step"><div class="exec-n" style="color:var(--teal)">4</div><div class="exec-content"><strong>HAVING</strong><span>Filter groups — like WHERE but for groups after aggregation</span></div><div class="exec-note">Group-level filter</div></div>
+        <div class="exec-step"><div class="exec-n" style="color:var(--accent)">5</div><div class="exec-content"><strong>SELECT</strong><span>Choose which columns to show, apply expressions, aliases</span></div><div class="exec-note">Columns chosen here</div></div>
+        <div class="exec-step"><div class="exec-n" style="color:var(--purple)">6</div><div class="exec-content"><strong>ORDER BY</strong><span>Sort the final result — can use aliases from SELECT!</span></div><div class="exec-note">Aliases usable here</div></div>
+        <div class="exec-step"><div class="exec-n" style="color:var(--green)">7</div><div class="exec-content"><strong>LIMIT / OFFSET</strong><span>Take only N rows from the sorted result</span></div><div class="exec-note">Final cut</div></div>
+      </div>
+      <div class="int-alert"><strong>Why This Matters in Interviews</strong>
+        <ul>
+          <li>"Why can't I use a SELECT alias in WHERE?" → WHERE runs before SELECT, alias doesn't exist yet</li>
+          <li>"Why does HAVING exist if we have WHERE?" → WHERE can't filter aggregates (SUM, COUNT) because GROUP BY hasn't happened yet</li>
+          <li>"Can ORDER BY use aliases?" → YES — ORDER BY runs after SELECT, so aliases exist</li>
+          <li>"Why can't GROUP BY use window function results?" → Window functions run after GROUP BY in logical order</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 1 — SELECT/WHERE ========== -->
+<div class="mod" id="m1">
+  <div class="mod-hd">
+    <div class="mod-num">01</div>
+    <div><div class="mod-title">SELECT, FROM, WHERE — The Foundation</div>
+    <div class="mod-sub">Every analyst writes 100 of these per day. Know every operator cold.</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">SELECT Essentials + Filtering Operators</div><div class="tags"><span class="tag t-easy">Beginner</span><span class="tag t-must">Daily Use</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">select_basics.sql</div><pre><span class="cm">-- Basic structure</span>
+<span class="kw">SELECT</span> column1, column2, expression <span class="kw">AS</span> alias
+<span class="kw">FROM</span>   <span class="tb">table_name</span>
+<span class="kw">WHERE</span>  condition
+<span class="kw">ORDER BY</span> column1 <span class="kw">DESC</span>
+<span class="kw">LIMIT</span>  <span class="num">10</span>;
+
+<span class="cm">-- All operators you must know</span>
+<span class="kw">WHERE</span> amount = <span class="num">5000</span>          <span class="cm">-- equal</span>
+<span class="kw">WHERE</span> amount != <span class="num">5000</span>         <span class="cm">-- not equal (also &lt;&gt;)</span>
+<span class="kw">WHERE</span> amount &gt; <span class="num">1000</span> <span class="kw">AND</span> amount &lt; <span class="num">10000</span>
+<span class="kw">WHERE</span> amount <span class="kw">BETWEEN</span> <span class="num">1000</span> <span class="kw">AND</span> <span class="num">10000</span>   <span class="cm">-- inclusive both ends</span>
+<span class="kw">WHERE</span> city <span class="kw">IN</span> (<span class="st">'Mumbai'</span>, <span class="st">'Delhi'</span>, <span class="st">'Bangalore'</span>)
+<span class="kw">WHERE</span> city <span class="kw">NOT IN</span> (<span class="st">'Chennai'</span>)
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="st">'A%'</span>         <span class="cm">-- starts with A (% = any chars)</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="st">'%kumar'</span>     <span class="cm">-- ends with kumar</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="st">'%an%'</span>       <span class="cm">-- contains 'an' anywhere</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> <span class="st">'An_nya'</span>     <span class="cm">-- _ matches exactly one char</span>
+<span class="kw">WHERE</span> discount_pct <span class="kw">IS NULL</span>
+<span class="kw">WHERE</span> discount_pct <span class="kw">IS NOT NULL</span>
+
+<span class="cm">-- Computed columns in SELECT</span>
+<span class="kw">SELECT</span>
+  user_id,
+  amount,
+  discount_pct,
+  amount * (<span class="num">1</span> - discount_pct/<span class="num">100.0</span>) <span class="kw">AS</span> final_price,
+  <span class="kw">UPPER</span>(city)                        <span class="kw">AS</span> city_upper,
+  <span class="kw">ROUND</span>(amount * <span class="num">0.18</span>, <span class="num">2</span>)           <span class="kw">AS</span> gst_amount
+<span class="kw">FROM</span> <span class="tb">orders</span>;</pre></div>
+      <div class="warn"><strong>Common Beginner Mistake</strong>NULL comparisons with = NEVER work. NULL = NULL returns NULL (not TRUE). Always use IS NULL or IS NOT NULL. This silently filters wrong rows in interviews.</div>
+      <div class="int-alert"><strong>Interview Questions — Basics</strong>
+        <ul>
+          <li>Find all users from Mumbai who signed up in 2023</li>
+          <li>Show orders where amount is between 500 and 2000, not refunded</li>
+          <li>Find users whose name starts with 'A' or ends with 'a' (use OR + LIKE)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 2 — AGGREGATIONS ========== -->
+<div class="mod" id="m2">
+  <div class="mod-hd">
+    <div class="mod-num">02</div>
+    <div><div class="mod-title">Aggregations — GROUP BY, HAVING</div>
+    <div class="mod-sub">COUNT, SUM, AVG, MIN, MAX — and why HAVING is not just "WHERE for groups"</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Aggregate Functions Deep Dive</div><div class="tags"><span class="tag t-must">Most Asked</span><span class="tag t-easy">Core</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>Mental Model</strong>GROUP BY physically separates your table into piles (one per unique group value). Then aggregate functions run on each pile independently. HAVING is the filter that runs AFTER the piles are made — it can see COUNT(*), SUM(), etc. WHERE runs BEFORE piles are made — it cannot.</div>
+      <div class="code-block"><div class="code-top">aggregations.sql</div><pre><span class="cm">-- COUNT variations — most misunderstood in interviews</span>
+<span class="kw">SELECT</span>
+  <span class="fn">COUNT</span>(*)            <span class="kw">AS</span> total_rows,       <span class="cm">-- counts everything including NULLs</span>
+  <span class="fn">COUNT</span>(discount_pct) <span class="kw">AS</span> non_null_discounts, <span class="cm">-- ignores NULLs</span>
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">AS</span> unique_buyers, <span class="cm">-- distinct count</span>
+  <span class="fn">SUM</span>(amount)         <span class="kw">AS</span> total_revenue,
+  <span class="fn">AVG</span>(amount)         <span class="kw">AS</span> avg_order_value,
+  <span class="fn">MIN</span>(amount)         <span class="kw">AS</span> min_order,
+  <span class="fn">MAX</span>(amount)         <span class="kw">AS</span> max_order,
+  <span class="fn">ROUND</span>(<span class="fn">AVG</span>(amount),<span class="num">2</span>) <span class="kw">AS</span> rounded_aov
+<span class="kw">FROM</span> <span class="tb">orders</span>
+<span class="kw">WHERE</span> status = <span class="st">'completed'</span>;  <span class="cm">-- filters BEFORE grouping</span>
+
+<span class="cm">-- GROUP BY with multiple columns</span>
+<span class="kw">SELECT</span>
+  u.city,
+  o.status,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> order_count,
+  <span class="fn">SUM</span>(o.amount) <span class="kw">AS</span> revenue
+<span class="kw">FROM</span>  <span class="tb">orders</span> o
+<span class="kw">JOIN</span>  <span class="tb">users</span>  u <span class="kw">ON</span> o.user_id = u.user_id
+<span class="kw">GROUP BY</span> u.city, o.status
+<span class="kw">ORDER BY</span> revenue <span class="kw">DESC</span>;
+
+<span class="cm">-- HAVING — filter on aggregated result</span>
+<span class="kw">SELECT</span>
+  user_id,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> order_count,
+  <span class="fn">SUM</span>(amount) <span class="kw">AS</span> total_spend
+<span class="kw">FROM</span>  <span class="tb">orders</span>
+<span class="kw">GROUP BY</span> user_id
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) >= <span class="num">3</span>           <span class="cm">-- only users with 3+ orders</span>
+   <span class="kw">AND</span> <span class="fn">SUM</span>(amount) > <span class="num">10000</span>;    <span class="cm">-- AND spent over 10000</span>
+
+<span class="cm">-- HAVING vs WHERE — clear comparison</span>
+<span class="kw">SELECT</span> city, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> users
+<span class="kw">FROM</span> <span class="tb">users</span>
+<span class="kw">WHERE</span>  plan = <span class="st">'pro'</span>        <span class="cm">-- ✅ filter rows BEFORE grouping</span>
+<span class="kw">GROUP BY</span> city
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) > <span class="num">5</span>;       <span class="cm">-- ✅ filter groups AFTER grouping</span>
+<span class="cm">-- ❌ Wrong: WHERE COUNT(*) > 5  → error, aggregate in WHERE not allowed</span></pre></div>
+      <div class="int-alert"><strong>Classic Interview Traps</strong>
+        <ul>
+          <li>COUNT(*) vs COUNT(col): COUNT(*) counts all rows; COUNT(col) skips NULLs — asked at every company</li>
+          <li>Every column in SELECT must be in GROUP BY OR be an aggregate function — exception: primary key</li>
+          <li>AVG ignores NULLs — SUM/COUNT also ignore NULLs — this can make AVG misleading</li>
+          <li>"Find cities with more than 100 users" → GROUP BY city HAVING COUNT(*) > 100</li>
+        </ul>
+      </div>
+      <div class="business-case"><strong>Business Use Case — Flipkart/Amazon Style</strong>Find customers who made at least 2 purchases in Q1 2024 and spent over ₹5000 total. Flag them as "high value" for a loyalty campaign. → GROUP BY user_id HAVING COUNT(*) >= 2 AND SUM(amount) > 5000</div>
+    </div>
+  </div>
+
+  <div class="practice">
+    <h3>🎯 Aggregation Practice</h3>
+    <div class="pq"><span class="pqn">Q1</span><div>Find the total revenue and average order value per course category. Sort by total revenue descending.</div><span class="pq-company">Swiggy style</span></div>
+    <div class="pq"><span class="pqn m">Q2</span><div>Find cities that have more than 50 users on the 'pro' plan. Show city and pro user count.</div><span class="pq-company">Razorpay style</span></div>
+    <div class="pq"><span class="pqn m">Q3</span><div>Find the month with highest number of orders in 2023. (Hint: use DATE_TRUNC or MONTH function)</div><span class="pq-company">CRED style</span></div>
+    <div class="pq"><span class="pqn h">Q4</span><div>Find users who placed orders in consecutive months (Jan and Feb 2024). Without window functions.</div><span class="pq-company">Meesho style</span></div>
+  </div>
+</div>
+
+<!-- ========== MODULE 3 — CASE WHEN ========== -->
+<div class="mod" id="m3">
+  <div class="mod-hd">
+    <div class="mod-num">03</div>
+    <div><div class="mod-title">CASE WHEN — SQL's if/else</div>
+    <div class="mod-sub">Segmentation, conditional aggregation, pivot — all powered by CASE WHEN</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">CASE WHEN — Every Pattern You Need</div><div class="tags"><span class="tag t-must">Everywhere</span><span class="tag t-prod">Product Analytics</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">case_when.sql</div><pre><span class="cm">-- Simple CASE (like switch statement)</span>
+<span class="kw">SELECT</span>
+  user_id,
+  plan,
+  <span class="kw">CASE</span> plan
+    <span class="kw">WHEN</span> <span class="st">'free'</span>  <span class="kw">THEN</span> <span class="st">'Freemium'</span>
+    <span class="kw">WHEN</span> <span class="st">'basic'</span> <span class="kw">THEN</span> <span class="st">'Starter'</span>
+    <span class="kw">WHEN</span> <span class="st">'pro'</span>   <span class="kw">THEN</span> <span class="st">'Premium'</span>
+    <span class="kw">ELSE</span> <span class="st">'Unknown'</span>
+  <span class="kw">END</span> <span class="kw">AS</span> plan_label
+<span class="kw">FROM</span> <span class="tb">users</span>;
+
+<span class="cm">-- Searched CASE (most common — each WHEN has full condition)</span>
+<span class="kw">SELECT</span>
+  order_id, amount,
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> amount >= <span class="num">10000</span> <span class="kw">THEN</span> <span class="st">'Premium'</span>
+    <span class="kw">WHEN</span> amount >= <span class="num">3000</span>  <span class="kw">THEN</span> <span class="st">'Standard'</span>
+    <span class="kw">WHEN</span> amount >= <span class="num">500</span>   <span class="kw">THEN</span> <span class="st">'Budget'</span>
+    <span class="kw">ELSE</span>                       <span class="st">'Micro'</span>
+  <span class="kw">END</span> <span class="kw">AS</span> order_tier
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+
+<span class="cm">-- CONDITIONAL AGGREGATION — the killer pattern for interviews</span>
+<span class="cm">-- "How many orders per status per month in ONE query?"</span>
+<span class="kw">SELECT</span>
+  <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, ordered_at) <span class="kw">AS</span> month,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> total_orders,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> status = <span class="st">'completed'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> completed,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> status = <span class="st">'refunded'</span>  <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> refunded,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> status = <span class="st">'pending'</span>   <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> pending,
+  <span class="fn">SUM</span>(<span class="kw">CASE WHEN</span> status = <span class="st">'completed'</span>  <span class="kw">THEN</span> amount <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> completed_revenue,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span> * <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> status=<span class="st">'refunded'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) / <span class="fn">COUNT</span>(*), <span class="num">2</span>) <span class="kw">AS</span> refund_rate
+<span class="kw">FROM</span> <span class="tb">orders</span>
+<span class="kw">GROUP BY</span> <span class="num">1</span>   <span class="cm">-- GROUP BY 1 = GROUP BY first column in SELECT</span>
+<span class="kw">ORDER BY</span> <span class="num">1</span>;
+
+<span class="cm">-- CASE in ORDER BY — custom sort logic</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">orders</span>
+<span class="kw">ORDER BY</span>
+  <span class="kw">CASE</span> status
+    <span class="kw">WHEN</span> <span class="st">'pending'</span>   <span class="kw">THEN</span> <span class="num">1</span>   <span class="cm">-- pending first</span>
+    <span class="kw">WHEN</span> <span class="st">'completed'</span> <span class="kw">THEN</span> <span class="num">2</span>
+    <span class="kw">WHEN</span> <span class="st">'refunded'</span>  <span class="kw">THEN</span> <span class="num">3</span>
+  <span class="kw">END</span>;
+
+<span class="cm">-- PIVOT with CASE WHEN — show categories as columns</span>
+<span class="kw">SELECT</span>
+  u.city,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> u.plan = <span class="st">'free'</span>  <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> free_users,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> u.plan = <span class="st">'basic'</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> basic_users,
+  <span class="fn">COUNT</span>(<span class="kw">CASE WHEN</span> u.plan = <span class="st">'pro'</span>   <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">END</span>) <span class="kw">AS</span> pro_users
+<span class="kw">FROM</span> <span class="tb">users</span> u
+<span class="kw">GROUP BY</span> u.city;</pre></div>
+      <div class="tip"><strong>Pro Tip — Conditional Aggregation is Pivot in SQL</strong>SUM(CASE WHEN condition THEN amount ELSE 0 END) is how you "pivot" rows into columns. This is asked in 70% of senior DA interviews at product companies. COUNT(CASE WHEN condition THEN 1 END) — note: ELSE NULL by default, so NULLs are skipped by COUNT, giving you conditional count.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 4 — JOINS ========== -->
+<div class="mod" id="m4">
+  <div class="mod-hd">
+    <div class="mod-num">04</div>
+    <div><div class="mod-title">JOINs — Complete Guide</div>
+    <div class="mod-sub">INNER, LEFT, RIGHT, FULL, CROSS, SELF, Anti-Join — every type with business context</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Visual Guide to All JOIN Types</div><div class="tags"><span class="tag t-must">Most Tested</span></div></div>
+    <div class="card-body">
+      <div class="join-grid">
+        <div class="join-card"><div class="join-venn">⬛🔲</div><div class="join-name">INNER JOIN</div><div class="join-desc">Only matching rows in BOTH tables. Most restrictive.</div></div>
+        <div class="join-card"><div class="join-venn">🔲⬛</div><div class="join-name">LEFT JOIN</div><div class="join-desc">All left rows + matches from right. NULL where no match.</div></div>
+        <div class="join-card"><div class="join-venn">⬛🔲</div><div class="join-name">RIGHT JOIN</div><div class="join-desc">All right rows + matches from left. Just flip LEFT JOIN.</div></div>
+        <div class="join-card"><div class="join-venn">🔲🔲</div><div class="join-name">FULL OUTER</div><div class="join-desc">All rows from both. NULL where no match on either side.</div></div>
+        <div class="join-card"><div class="join-venn">🔲✖️🔲</div><div class="join-name">CROSS JOIN</div><div class="join-desc">Every row × every row. N×M rows. No ON clause needed.</div></div>
+        <div class="join-card"><div class="join-venn">🔄</div><div class="join-name">SELF JOIN</div><div class="join-desc">Table joined to itself. Employee→Manager hierarchy.</div></div>
+      </div>
+      <div class="code-block"><div class="code-top">joins_complete.sql</div><pre><span class="cm">-- INNER JOIN — only users who have placed orders</span>
+<span class="kw">SELECT</span> u.name, u.city, o.amount, o.status
+<span class="kw">FROM</span>   <span class="tb">users</span>  u
+<span class="kw">INNER JOIN</span> <span class="tb">orders</span> o <span class="kw">ON</span> u.user_id = o.user_id;
+
+<span class="cm">-- LEFT JOIN — ALL users, orders if they exist (NULL if not)</span>
+<span class="kw">SELECT</span> u.name, u.city, o.amount
+<span class="kw">FROM</span>  <span class="tb">users</span>  u
+<span class="kw">LEFT JOIN</span> <span class="tb">orders</span> o <span class="kw">ON</span> u.user_id = o.user_id;
+<span class="cm">-- Users who never ordered: o.amount IS NULL</span>
+
+<span class="cm">-- ANTI-JOIN — Users who NEVER placed an order</span>
+<span class="cm">-- Pattern: LEFT JOIN + WHERE right side IS NULL</span>
+<span class="kw">SELECT</span> u.name, u.city
+<span class="kw">FROM</span>  <span class="tb">users</span>  u
+<span class="kw">LEFT JOIN</span> <span class="tb">orders</span> o <span class="kw">ON</span> u.user_id = o.user_id
+<span class="kw">WHERE</span> o.order_id <span class="kw">IS NULL</span>;     <span class="cm">-- the magic line</span>
+
+<span class="cm">-- SELF JOIN — find users from the same city</span>
+<span class="kw">SELECT</span> a.name <span class="kw">AS</span> user1, b.name <span class="kw">AS</span> user2, a.city
+<span class="kw">FROM</span>  <span class="tb">users</span> a
+<span class="kw">JOIN</span>  <span class="tb">users</span> b <span class="kw">ON</span> a.city = b.city <span class="kw">AND</span> a.user_id &lt; b.user_id;
+<span class="cm">-- a.user_id < b.user_id prevents (A,B) and (B,A) duplicates</span>
+
+<span class="cm">-- FULL OUTER JOIN — find unmatched on BOTH sides</span>
+<span class="kw">SELECT</span>
+  <span class="fn">COALESCE</span>(u.user_id, o.user_id) <span class="kw">AS</span> uid,
+  u.name, o.order_id,
+  <span class="kw">CASE</span>
+    <span class="kw">WHEN</span> u.user_id <span class="kw">IS NULL</span> <span class="kw">THEN</span> <span class="st">'Order without user'</span>
+    <span class="kw">WHEN</span> o.order_id <span class="kw">IS NULL</span> <span class="kw">THEN</span> <span class="st">'User without order'</span>
+    <span class="kw">ELSE</span> <span class="st">'Matched'</span>
+  <span class="kw">END</span> <span class="kw">AS</span> match_status
+<span class="kw">FROM</span>      <span class="tb">users</span>  u
+<span class="kw">FULL OUTER JOIN</span> <span class="tb">orders</span> o <span class="kw">ON</span> u.user_id = o.user_id;
+
+<span class="cm">-- JOIN on multiple conditions</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">orders</span> o
+<span class="kw">JOIN</span> <span class="tb">courses</span> c <span class="kw">ON</span> o.course_id = c.course_id
+<span class="kw">JOIN</span> <span class="tb">users</span>   u <span class="kw">ON</span> o.user_id   = u.user_id
+<span class="kw">WHERE</span> c.category = <span class="st">'Data Science'</span> <span class="kw">AND</span> u.plan = <span class="st">'pro'</span>;</pre></div>
+
+      <div class="int-alert"><strong>Interview Questions — JOINs at FAANG/Product Companies</strong>
+        <ul>
+          <li>"Find users who signed up but never made a purchase" → Anti-JOIN (LEFT + WHERE IS NULL)</li>
+          <li>"What's the difference between LEFT JOIN and INNER JOIN?" → LEFT keeps all left rows</li>
+          <li>"If I JOIN two tables and get more rows than the left table, what happened?" → Duplicate keys in right table causing fan-out</li>
+          <li>"Find customers who bought course A but NOT course B" → Anti-JOIN pattern</li>
+        </ul>
+      </div>
+
+      <div class="warn"><strong>FAN-OUT BUG — The Hidden JOIN Trap</strong>If the right table has multiple matching rows per key, JOIN duplicates the left table rows. SUM() after a duplicating JOIN gives WRONG results. Always check: is my join key unique in the right table? If not, deduplicate first or use a subquery.</div>
+    </div>
+  </div>
+
+  <div class="practice">
+    <h3>🎯 JOIN Practice</h3>
+    <div class="pq"><span class="pqn">Q1</span><div>Find the top 5 courses by revenue. Show course title, category, and total revenue. <span class="tag t-easy" style="margin-left:6px">Easy</span></div><span class="pq-company">Unacademy</span></div>
+    <div class="pq"><span class="pqn m">Q2</span><div>Find users who joined in January 2023 but have NEVER placed an order. Show name and city.</div><span class="pq-company">Google</span></div>
+    <div class="pq"><span class="pqn m">Q3</span><div>Find pairs of users from the same city who both have 'pro' plans.</div><span class="pq-company">Meta</span></div>
+    <div class="pq"><span class="pqn h">Q4</span><div>Find courses that have been purchased by users on ALL plan types (free, basic, pro).</div><span class="pq-company">Amazon</span></div>
+  </div>
+</div>
+
+<!-- ========== MODULE 5 — SUBQUERIES ========== -->
+<div class="mod" id="m5">
+  <div class="mod-hd">
+    <div class="mod-num">05</div>
+    <div><div class="mod-title">Subqueries — Queries Inside Queries</div>
+    <div class="mod-sub">Scalar, correlated, EXISTS — and when to use CTE instead</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">All Subquery Types with Examples</div><div class="tags"><span class="tag t-must">Medium Interviews</span><span class="tag t-adv">Advanced</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">subqueries.sql</div><pre><span class="cm">-- 1. SCALAR SUBQUERY — returns exactly one value</span>
+<span class="kw">SELECT</span>
+  user_id, amount,
+  amount - (<span class="kw">SELECT</span> <span class="fn">AVG</span>(amount) <span class="kw">FROM</span> <span class="tb">orders</span>) <span class="kw">AS</span> diff_from_avg
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+
+<span class="cm">-- 2. IN SUBQUERY — filter where value exists in sub-result</span>
+<span class="kw">SELECT</span> name, city
+<span class="kw">FROM</span>  <span class="tb">users</span>
+<span class="kw">WHERE</span> user_id <span class="kw">IN</span> (
+  <span class="kw">SELECT DISTINCT</span> user_id
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+  <span class="kw">WHERE</span> amount > <span class="num">5000</span>
+);
+
+<span class="cm">-- 3. CORRELATED SUBQUERY — references outer query (runs per row)</span>
+<span class="cm">-- "Find orders above that user's own average"</span>
+<span class="kw">SELECT</span> o1.user_id, o1.amount
+<span class="kw">FROM</span>  <span class="tb">orders</span> o1
+<span class="kw">WHERE</span> o1.amount > (
+  <span class="kw">SELECT</span> <span class="fn">AVG</span>(o2.amount)
+  <span class="kw">FROM</span>  <span class="tb">orders</span> o2
+  <span class="kw">WHERE</span> o2.user_id = o1.user_id  <span class="cm">-- references outer query!</span>
+);
+
+<span class="cm">-- 4. EXISTS — true/false existence check (faster than IN for large sets)</span>
+<span class="kw">SELECT</span> u.name
+<span class="kw">FROM</span>  <span class="tb">users</span> u
+<span class="kw">WHERE</span> <span class="kw">EXISTS</span> (
+  <span class="kw">SELECT</span> <span class="num">1</span>
+  <span class="kw">FROM</span> <span class="tb">orders</span> o
+  <span class="kw">WHERE</span> o.user_id = u.user_id
+    <span class="kw">AND</span> o.status = <span class="st">'completed'</span>
+);
+
+<span class="cm">-- 5. FROM subquery — treat result as table</span>
+<span class="kw">SELECT</span> city, avg_spend
+<span class="kw">FROM</span> (
+  <span class="kw">SELECT</span> u.city, <span class="fn">AVG</span>(o.amount) <span class="kw">AS</span> avg_spend
+  <span class="kw">FROM</span>  <span class="tb">users</span>  u
+  <span class="kw">JOIN</span>  <span class="tb">orders</span> o <span class="kw">ON</span> u.user_id = o.user_id
+  <span class="kw">GROUP BY</span> u.city
+) <span class="kw">AS</span> city_stats
+<span class="kw">WHERE</span> avg_spend > <span class="num">3000</span>   <span class="cm">-- can now filter on aggregated result</span>
+<span class="kw">ORDER BY</span> avg_spend <span class="kw">DESC</span>;</pre></div>
+      <div class="tip"><strong>EXISTS vs IN — Which is Faster?</strong>EXISTS short-circuits — stops as soon as it finds one match. IN evaluates ALL values. For large subquery results: EXISTS is faster. For small lists: IN is cleaner. In most modern databases the optimizer handles this, but interviewers still ask — answer: EXISTS is semantically correct for "does any row match."</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 6 — CTEs ========== -->
+<div class="mod" id="m6">
+  <div class="mod-hd">
+    <div class="mod-num">06</div>
+    <div><div class="mod-title">CTEs — Common Table Expressions</div>
+    <div class="mod-sub">WITH clauses, multiple CTEs, recursive CTEs — write readable SQL like a senior analyst</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">CTEs: The Right Way to Structure Complex Queries</div><div class="tags"><span class="tag t-must">Senior Level</span><span class="tag t-adv">Readability</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>Analogy</strong>A CTE is like giving a name to a sticky note. Instead of copy-pasting the same subquery three times in your query, you write it once with a name (WITH ...) and refer to that name. It doesn't improve performance over subqueries in most databases — but it makes your code 10x more readable and interviewers LOVE it.</div>
+      <div class="code-block"><div class="code-top">ctes.sql — Building a complex analytics query step by step</div><pre><span class="cm">-- Single CTE</span>
+<span class="kw">WITH</span> high_value_users <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> user_id, <span class="fn">SUM</span>(amount) <span class="kw">AS</span> total_spend
+  <span class="kw">FROM</span>  <span class="tb">orders</span>
+  <span class="kw">WHERE</span> status = <span class="st">'completed'</span>
+  <span class="kw">GROUP BY</span> user_id
+  <span class="kw">HAVING</span> <span class="fn">SUM</span>(amount) > <span class="num">10000</span>
+)
+<span class="kw">SELECT</span> u.name, u.city, h.total_spend
+<span class="kw">FROM</span>  <span class="tb">users</span>       u
+<span class="kw">JOIN</span>  high_value_users h <span class="kw">ON</span> u.user_id = h.user_id
+<span class="kw">ORDER BY</span> h.total_spend <span class="kw">DESC</span>;
+
+<span class="cm">-- MULTIPLE CTEs — chained like a pipeline</span>
+<span class="kw">WITH</span>
+
+<span class="cm">-- Step 1: Get monthly order stats</span>
+monthly_orders <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, ordered_at) <span class="kw">AS</span> month,
+    user_id,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> orders_in_month,
+    <span class="fn">SUM</span>(amount) <span class="kw">AS</span> monthly_spend
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+  <span class="kw">WHERE</span> status = <span class="st">'completed'</span>
+  <span class="kw">GROUP BY</span> <span class="num">1</span>, <span class="num">2</span>
+),
+
+<span class="cm">-- Step 2: Classify users by activity</span>
+user_segments <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">AVG</span>(orders_in_month) <span class="kw">AS</span> avg_monthly_orders,
+    <span class="fn">SUM</span>(monthly_spend)   <span class="kw">AS</span> total_spend,
+    <span class="kw">CASE</span>
+      <span class="kw">WHEN</span> <span class="fn">AVG</span>(orders_in_month) >= <span class="num">2</span> <span class="kw">THEN</span> <span class="st">'Power User'</span>
+      <span class="kw">WHEN</span> <span class="fn">AVG</span>(orders_in_month) >= <span class="num">1</span> <span class="kw">THEN</span> <span class="st">'Regular'</span>
+      <span class="kw">ELSE</span>                               <span class="st">'Occasional'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> segment
+  <span class="kw">FROM</span> monthly_orders    <span class="cm">-- references first CTE!</span>
+  <span class="kw">GROUP BY</span> user_id
+),
+
+<span class="cm">-- Step 3: Count by segment</span>
+segment_summary <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    segment,
+    <span class="fn">COUNT</span>(*)           <span class="kw">AS</span> user_count,
+    <span class="fn">AVG</span>(total_spend)   <span class="kw">AS</span> avg_ltv
+  <span class="kw">FROM</span> user_segments   <span class="cm">-- references second CTE!</span>
+  <span class="kw">GROUP BY</span> segment
+)
+
+<span class="cm">-- Final SELECT</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> segment_summary <span class="kw">ORDER BY</span> avg_ltv <span class="kw">DESC</span>;</pre></div>
+
+      <div class="code-block"><div class="code-top">recursive_cte.sql — Hierarchy / Date Series</div><pre><span class="cm">-- RECURSIVE CTE — Generate date series (PostgreSQL/BigQuery)</span>
+<span class="kw">WITH RECURSIVE</span> date_series <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> <span class="st">'2024-01-01'</span>::<span class="kw">DATE</span> <span class="kw">AS</span> dt          <span class="cm">-- anchor</span>
+  <span class="kw">UNION ALL</span>
+  <span class="kw">SELECT</span> dt + <span class="kw">INTERVAL</span> <span class="st">'1 day'</span>
+  <span class="kw">FROM</span> date_series
+  <span class="kw">WHERE</span> dt &lt; <span class="st">'2024-03-31'</span>                  <span class="cm">-- termination</span>
+)
+<span class="kw">SELECT</span> dt <span class="kw">FROM</span> date_series;
+<span class="cm">-- Use case: LEFT JOIN this to daily orders to fill 0s on days with no orders</span>
+
+<span class="cm">-- RECURSIVE CTE — Employee-Manager hierarchy</span>
+<span class="kw">WITH RECURSIVE</span> org_tree <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> employee_id, name, manager_id, <span class="num">0</span> <span class="kw">AS</span> level
+  <span class="kw">FROM</span>  employees
+  <span class="kw">WHERE</span> manager_id <span class="kw">IS NULL</span>      <span class="cm">-- start at root (CEO)</span>
+  <span class="kw">UNION ALL</span>
+  <span class="kw">SELECT</span> e.employee_id, e.name, e.manager_id, t.level + <span class="num">1</span>
+  <span class="kw">FROM</span>  employees e
+  <span class="kw">JOIN</span>  org_tree   t <span class="kw">ON</span> e.manager_id = t.employee_id
+)
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> org_tree <span class="kw">ORDER BY</span> level;</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 7 — WINDOW FUNCTIONS ========== -->
+<div class="mod" id="m7">
+  <div class="mod-hd">
+    <div class="mod-num">07</div>
+    <div><div class="mod-title">Window Functions — The Most Powerful SQL Feature</div>
+    <div class="mod-sub">ROW_NUMBER, RANK, LAG, LEAD, SUM OVER, NTILE — this alone covers 50% of hard interviews</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">The Core Mental Model — OVER() Clause</div><div class="tags"><span class="tag t-must">Critical</span><span class="tag t-faang">FAANG Level</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>Window vs GROUP BY — The Fundamental Difference</strong>GROUP BY collapses many rows into fewer rows (one per group). Window functions keep ALL rows but ADD a computed column based on a "window" of rows. The window slides along your data. This is why they're called window functions — you're looking through a sliding window.</div>
+      <div class="code-block"><div class="code-top">window_anatomy.sql — Understand this, everything else follows</div><pre><span class="cm">-- Full syntax of a window function</span>
+function_name() <span class="kw">OVER</span> (
+  <span class="kw">PARTITION BY</span> column1          <span class="cm">-- divide into groups (optional)</span>
+  <span class="kw">ORDER BY</span>     column2          <span class="cm">-- sort within each group (required for ranking/running)</span>
+  <span class="kw">ROWS BETWEEN</span> start <span class="kw">AND</span> end   <span class="cm">-- define window frame (optional)</span>
+)
+
+<span class="cm">-- OVER() with nothing = entire table as one window</span>
+<span class="kw">SELECT</span> user_id, amount, <span class="fn">AVG</span>(amount) <span class="kw">OVER</span>() <span class="kw">AS</span> global_avg
+<span class="kw">FROM</span> <span class="tb">orders</span>;  <span class="cm">-- every row shows the SAME global avg alongside its own amount</span>
+
+<span class="cm">-- PARTITION BY = GROUP BY but keeps all rows</span>
+<span class="kw">SELECT</span>
+  user_id, amount,
+  <span class="fn">SUM</span>(amount) <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id) <span class="kw">AS</span> user_total,
+  amount / <span class="fn">SUM</span>(amount) <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id) <span class="kw">AS</span> pct_of_user_total
+<span class="kw">FROM</span> <span class="tb">orders</span>;</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Ranking Functions — ROW_NUMBER, RANK, DENSE_RANK, NTILE</div><div class="tags"><span class="tag t-must">Top-N Problems</span><span class="tag t-faang">FAANG Staple</span></div></div>
+    <div class="card-body">
+      <table class="ctbl">
+        <tr><th>Function</th><th>Behavior on ties</th><th>Use case</th></tr>
+        <tr><td><code>ROW_NUMBER()</code></td><td>Always unique — tie broken arbitrarily</td><td>De-deduplication, getting exactly 1 row per group</td></tr>
+        <tr><td><code>RANK()</code></td><td>Ties get same rank, GAPS after tie</td><td>Competition ranking (1,1,3,4)</td></tr>
+        <tr><td><code>DENSE_RANK()</code></td><td>Ties get same rank, NO GAPS</td><td>Percentile ranking (1,1,2,3)</td></tr>
+        <tr><td><code>NTILE(n)</code></td><td>Divides into n equal buckets</td><td>Quartiles, deciles, top 10%</td></tr>
+      </table>
+      <div class="code-block"><div class="code-top">ranking.sql</div><pre><span class="cm">-- All four on same data to see the difference</span>
+<span class="kw">SELECT</span>
+  user_id, amount,
+  <span class="fn">ROW_NUMBER</span>()   <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount <span class="kw">DESC</span>) <span class="kw">AS</span> row_num,
+  <span class="fn">RANK</span>()         <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount <span class="kw">DESC</span>) <span class="kw">AS</span> rank_num,
+  <span class="fn">DENSE_RANK</span>()   <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount <span class="kw">DESC</span>) <span class="kw">AS</span> dense_rank_num,
+  <span class="fn">NTILE</span>(<span class="num">4</span>)       <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount <span class="kw">DESC</span>) <span class="kw">AS</span> quartile
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+<span class="cm">-- If amounts are: 500, 500, 300, 200, 100
+-- row_num:     1, 2, 3, 4, 5
+-- rank:        1, 1, 3, 4, 5   ← gap after tie
+-- dense_rank:  1, 1, 2, 3, 4   ← no gap
+-- ntile(4):    1, 1, 2, 3, 4   ← four buckets</span>
+
+<span class="cm">-- THE CLASSIC INTERVIEW QUESTION:</span>
+<span class="cm">-- "Find the top 2 orders by amount for each user"</span>
+<span class="kw">WITH</span> ranked <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id, order_id, amount,
+    <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> amount <span class="kw">DESC</span>) <span class="kw">AS</span> rn
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+)
+<span class="kw">SELECT</span> user_id, order_id, amount
+<span class="kw">FROM</span>  ranked
+<span class="kw">WHERE</span> rn &lt;= <span class="num">2</span>;         <span class="cm">-- ← the filter on window function result</span>
+
+<span class="cm">-- WHY ROW_NUMBER not RANK here?
+-- If user has two orders both ₹5000, RANK gives both rank 1, so WHERE rn<=2
+-- might return 3 rows (two rank-1 + one rank-3). ROW_NUMBER gives exactly 2.</span>
+
+<span class="cm">-- Top spender per city</span>
+<span class="kw">WITH</span> city_ranked <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    u.name, u.city, <span class="fn">SUM</span>(o.amount) <span class="kw">AS</span> total,
+    <span class="fn">RANK</span>() <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> u.city <span class="kw">ORDER BY</span> <span class="fn">SUM</span>(o.amount) <span class="kw">DESC</span>) <span class="kw">AS</span> rnk
+  <span class="kw">FROM</span>  <span class="tb">orders</span> o <span class="kw">JOIN</span> <span class="tb">users</span> u <span class="kw">ON</span> o.user_id = u.user_id
+  <span class="kw">GROUP BY</span> u.name, u.city
+)
+<span class="kw">SELECT</span> name, city, total
+<span class="kw">FROM</span>  city_ranked
+<span class="kw">WHERE</span> rnk = <span class="num">1</span>;</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">LAG & LEAD — Compare Rows Across Time</div><div class="tags"><span class="tag t-must">Time Series</span><span class="tag t-faang">Must Know</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>Analogy</strong>LAG looks BACKWARD — "what was the value N rows ago?" LEAD looks FORWARD — "what is the value N rows ahead?" This is how you compare this month to last month, or find users who upgraded their plan.</div>
+      <div class="code-block"><div class="code-top">lag_lead.sql</div><pre><span class="cm">-- Month-over-month revenue change</span>
+<span class="kw">WITH</span> monthly <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, ordered_at) <span class="kw">AS</span> month,
+    <span class="fn">SUM</span>(amount) <span class="kw">AS</span> revenue
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+  <span class="kw">WHERE</span> status = <span class="st">'completed'</span>
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+)
+<span class="kw">SELECT</span>
+  month,
+  revenue,
+  <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> prev_month_revenue,
+  revenue - <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> mom_change,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span> *
+    (revenue - <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> month))
+    / <span class="fn">NULLIF</span>(<span class="fn">LAG</span>(revenue) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> month), <span class="num">0</span>),
+  <span class="num">2</span>) <span class="kw">AS</span> mom_pct_change
+<span class="kw">FROM</span> monthly;
+
+<span class="cm">-- LAG with PARTITION BY — per user comparison</span>
+<span class="kw">SELECT</span>
+  user_id, ordered_at, amount,
+  <span class="fn">LAG</span>(amount, <span class="num">1</span>, <span class="num">0</span>) <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> ordered_at) <span class="kw">AS</span> prev_order,
+  <span class="cm">-- LAG(col, offset, default) — 1 row back, default 0 if no prior row</span>
+  amount - <span class="fn">LAG</span>(amount,<span class="num">1</span>,<span class="num">0</span>) <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> ordered_at) <span class="kw">AS</span> spend_change
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+
+<span class="cm">-- LEAD — find next event for each user (churn prediction)</span>
+<span class="kw">SELECT</span>
+  user_id, event_type, event_at,
+  <span class="fn">LEAD</span>(event_type) <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> event_at) <span class="kw">AS</span> next_event,
+  <span class="fn">LEAD</span>(event_at)   <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> event_at) <span class="kw">AS</span> next_event_at
+<span class="kw">FROM</span> <span class="tb">events</span>;</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Running Totals, Moving Averages, Cumulative Sums</div><div class="tags"><span class="tag t-must">Analytics Core</span><span class="tag t-prod">Product</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">running_totals.sql</div><pre><span class="cm">-- ROWS BETWEEN — the frame clause</span>
+<span class="cm">-- UNBOUNDED PRECEDING = from very first row in window</span>
+<span class="cm">-- CURRENT ROW        = this row</span>
+<span class="cm">-- N PRECEDING        = N rows before current</span>
+<span class="cm">-- UNBOUNDED FOLLOWING = to very last row in window</span>
+
+<span class="kw">SELECT</span>
+  ordered_at::DATE <span class="kw">AS</span> dt,
+  <span class="fn">SUM</span>(amount) <span class="kw">AS</span> daily_revenue,
+
+  <span class="cm">-- Running total from day 1 to current day</span>
+  <span class="fn">SUM</span>(<span class="fn">SUM</span>(amount)) <span class="kw">OVER</span>(
+    <span class="kw">ORDER BY</span> ordered_at::DATE
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</span>
+  ) <span class="kw">AS</span> cumulative_revenue,
+
+  <span class="cm">-- 7-day moving average</span>
+  <span class="fn">AVG</span>(<span class="fn">SUM</span>(amount)) <span class="kw">OVER</span>(
+    <span class="kw">ORDER BY</span> ordered_at::DATE
+    <span class="kw">ROWS BETWEEN</span> <span class="num">6</span> <span class="kw">PRECEDING AND CURRENT ROW</span>
+  ) <span class="kw">AS</span> ma7_revenue,
+
+  <span class="cm">-- 30-day moving average</span>
+  <span class="fn">AVG</span>(<span class="fn">SUM</span>(amount)) <span class="kw">OVER</span>(
+    <span class="kw">ORDER BY</span> ordered_at::DATE
+    <span class="kw">ROWS BETWEEN</span> <span class="num">29</span> <span class="kw">PRECEDING AND CURRENT ROW</span>
+  ) <span class="kw">AS</span> ma30_revenue
+
+<span class="kw">FROM</span>  <span class="tb">orders</span>
+<span class="kw">WHERE</span> status = <span class="st">'completed'</span>
+<span class="kw">GROUP BY</span> ordered_at::DATE
+<span class="kw">ORDER BY</span> dt;
+
+<span class="cm">-- Cumulative user count over time (growth tracking)</span>
+<span class="kw">WITH</span> daily_signups <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> joined_at::DATE <span class="kw">AS</span> dt, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> new_users
+  <span class="kw">FROM</span>  <span class="tb">users</span>
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+)
+<span class="kw">SELECT</span>
+  dt, new_users,
+  <span class="fn">SUM</span>(new_users) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> dt) <span class="kw">AS</span> total_users
+<span class="kw">FROM</span> daily_signups;</pre></div>
+      <div class="int-alert"><strong>FAANG Interview: "Compute 7-day rolling average of daily active users"</strong>
+        <ul>
+          <li>Step 1: Get daily DAU with GROUP BY date</li>
+          <li>Step 2: AVG(COUNT(*)) OVER(ORDER BY date ROWS BETWEEN 6 PRECEDING AND CURRENT ROW)</li>
+          <li>Step 3: Note: need to fill 0 for days with no activity using date series + LEFT JOIN</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">FIRST_VALUE, LAST_VALUE, NTH_VALUE, PERCENT_RANK</div><div class="tags"><span class="tag t-adv">Advanced</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">advanced_window.sql</div><pre><span class="cm">-- FIRST_VALUE / LAST_VALUE — access first/last row in window</span>
+<span class="kw">SELECT</span>
+  user_id, ordered_at, amount,
+  <span class="fn">FIRST_VALUE</span>(amount) <span class="kw">OVER</span>(
+    <span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> ordered_at
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</span>
+  ) <span class="kw">AS</span> first_order_amount,
+  <span class="fn">LAST_VALUE</span>(amount) <span class="kw">OVER</span>(
+    <span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> ordered_at
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</span>  <span class="cm">-- IMPORTANT!</span>
+  ) <span class="kw">AS</span> latest_order_amount
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+<span class="cm">-- CRITICAL: LAST_VALUE default frame is CURRENT ROW, not end.
+-- Always specify ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING</span>
+
+<span class="cm">-- PERCENT_RANK — percentile position (0 to 1)</span>
+<span class="kw">SELECT</span>
+  user_id, amount,
+  <span class="fn">PERCENT_RANK</span>() <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount) <span class="kw">AS</span> pct_rank,
+  <span class="fn">CUME_DIST</span>()    <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount) <span class="kw">AS</span> cumulative_dist
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+<span class="cm">-- PERCENT_RANK: (rank-1)/(total-1) — 0 to 1
+-- CUME_DIST: rows with val <= current / total — proportion</span></pre></div>
+    </div>
+  </div>
+
+  <div class="practice">
+    <h3>🎯 Window Function Practice — High Value Questions</h3>
+    <div class="pq"><span class="pqn m">W1</span><div>For each user, find their most recent order and the order before that. Calculate the % change in amount.</div><span class="pq-company">Stripe</span></div>
+    <div class="pq"><span class="pqn m">W2</span><div>Find the top 3 courses by revenue in each category. Return category, course_title, revenue, rank.</div><span class="pq-company">Coursera/Udemy</span></div>
+    <div class="pq"><span class="pqn h">W3</span><div>Calculate the 30-day rolling average of daily new user signups. Fill missing days with 0.</div><span class="pq-company">Google</span></div>
+    <div class="pq"><span class="pqn h">W4</span><div>Find users whose spending INCREASED for 3 consecutive months (each month > previous month).</div><span class="pq-company">Amazon</span></div>
+    <div class="pq"><span class="pqn h">W5</span><div>Assign users to top 10%, middle 40%, bottom 50% by total spend. Return user_id, total_spend, segment.</div><span class="pq-company">Meta</span></div>
+  </div>
+</div>
+
+<!-- ========== MODULE 8 — DATE & STRING ========== -->
+<div class="mod" id="m8">
+  <div class="mod-hd">
+    <div class="mod-num">08</div>
+    <div><div class="mod-title">Date & String Functions</div>
+    <div class="mod-sub">DATE_TRUNC, EXTRACT, DATEDIFF, CONCAT, SUBSTRING — analyst's daily toolkit</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Date Functions — Complete Reference</div><div class="tags"><span class="tag t-must">Daily Use</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">date_functions.sql — PostgreSQL/BigQuery syntax (most common in interviews)</div><pre><span class="cm">-- Extracting parts</span>
+<span class="fn">EXTRACT</span>(<span class="kw">YEAR FROM</span>  ordered_at)   <span class="cm">-- 2024</span>
+<span class="fn">EXTRACT</span>(<span class="kw">MONTH FROM</span> ordered_at)   <span class="cm">-- 1-12</span>
+<span class="fn">EXTRACT</span>(<span class="kw">DOW FROM</span>   ordered_at)   <span class="cm">-- 0=Sunday ... 6=Saturday</span>
+<span class="fn">EXTRACT</span>(<span class="kw">HOUR FROM</span>  ordered_at)   <span class="cm">-- 0-23</span>
+<span class="fn">DATE_PART</span>(<span class="st">'week'</span>, ordered_at)    <span class="cm">-- ISO week number</span>
+
+<span class="cm">-- Truncate to period (great for GROUP BY)</span>
+<span class="fn">DATE_TRUNC</span>(<span class="st">'day'</span>,     ordered_at) <span class="cm">-- 2024-01-15 00:00:00</span>
+<span class="fn">DATE_TRUNC</span>(<span class="st">'week'</span>,    ordered_at) <span class="cm">-- 2024-01-15 (Monday of that week)</span>
+<span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>,   ordered_at) <span class="cm">-- 2024-01-01 00:00:00</span>
+<span class="fn">DATE_TRUNC</span>(<span class="st">'quarter'</span>, ordered_at) <span class="cm">-- 2024-01-01 (Q1 start)</span>
+<span class="fn">DATE_TRUNC</span>(<span class="st">'year'</span>,    ordered_at) <span class="cm">-- 2024-01-01 00:00:00</span>
+
+<span class="cm">-- Date arithmetic</span>
+ordered_at + <span class="kw">INTERVAL</span> <span class="st">'7 days'</span>      <span class="cm">-- add 7 days</span>
+ordered_at - <span class="kw">INTERVAL</span> <span class="st">'1 month'</span>     <span class="cm">-- subtract 1 month</span>
+ordered_at::DATE - joined_at::DATE    <span class="cm">-- days between (integer)</span>
+<span class="kw">CURRENT_DATE</span>                         <span class="cm">-- today's date</span>
+<span class="kw">NOW</span>()                                <span class="cm">-- current timestamp</span>
+<span class="kw">CURRENT_DATE</span> - <span class="kw">INTERVAL</span> <span class="st">'30 days'</span>  <span class="cm">-- 30 days ago</span>
+
+<span class="cm">-- Days between two dates</span>
+<span class="fn">DATE_PART</span>(<span class="st">'day'</span>, ordered_at - joined_at::TIMESTAMP) <span class="kw">AS</span> days_to_order
+<span class="cm">-- Or: ordered_at::DATE - joined_at  (integer subtraction)</span>
+
+<span class="cm">-- Convert string to date</span>
+<span class="fn">TO_DATE</span>(<span class="st">'2024-01-15'</span>, <span class="st">'YYYY-MM-DD'</span>)
+<span class="st">'2024-01-15'</span>::DATE   <span class="cm">-- PostgreSQL cast</span>
+<span class="fn">CAST</span>(<span class="st">'2024-01-15'</span> <span class="kw">AS</span> DATE)  <span class="cm">-- standard SQL</span>
+
+<span class="cm">-- TYPICAL INTERVIEW PATTERN</span>
+<span class="kw">SELECT</span>
+  <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, ordered_at) <span class="kw">AS</span> month,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> orders,
+  <span class="fn">SUM</span>(amount) <span class="kw">AS</span> revenue
+<span class="kw">FROM</span> <span class="tb">orders</span>
+<span class="kw">WHERE</span> ordered_at >= <span class="kw">DATE_TRUNC</span>(<span class="st">'year'</span>, <span class="kw">CURRENT_DATE</span>)  <span class="cm">-- this year</span>
+<span class="kw">GROUP BY</span> <span class="num">1</span> <span class="kw">ORDER BY</span> <span class="num">1</span>;</pre></div>
+
+      <div class="code-block"><div class="code-top">string_functions.sql</div><pre><span class="cm">-- Core string functions</span>
+<span class="fn">UPPER</span>(name)                   <span class="cm">-- 'ANANYA'</span>
+<span class="fn">LOWER</span>(name)                   <span class="cm">-- 'ananya'</span>
+<span class="fn">LENGTH</span>(name)                  <span class="cm">-- character count</span>
+<span class="fn">TRIM</span>(name)                    <span class="cm">-- remove leading/trailing spaces</span>
+<span class="fn">LTRIM</span>(name)                   <span class="cm">-- left trim only</span>
+<span class="fn">RTRIM</span>(name)                   <span class="cm">-- right trim only</span>
+<span class="fn">REPLACE</span>(name,<span class="st">'a'</span>,<span class="st">'@'</span>)        <span class="cm">-- replace substring</span>
+<span class="fn">CONCAT</span>(first_name,<span class="st">' '</span>,last_name) <span class="cm">-- concatenate</span>
+first_name || <span class="st">' '</span> || last_name    <span class="cm">-- PostgreSQL concat operator</span>
+<span class="fn">SUBSTRING</span>(name, <span class="num">1</span>, <span class="num">3</span>)        <span class="cm">-- first 3 chars: 'Ana'</span>
+<span class="fn">LEFT</span>(name, <span class="num">3</span>)                  <span class="cm">-- same: 'Ana'</span>
+<span class="fn">RIGHT</span>(name, <span class="num">3</span>)                 <span class="cm">-- last 3: 'nya'</span>
+<span class="fn">POSITION</span>(<span class="st">'@'</span> <span class="kw">IN</span> email)        <span class="cm">-- index of char</span>
+<span class="fn">SPLIT_PART</span>(email, <span class="st">'@'</span>, <span class="num">1</span>)    <span class="cm">-- 'ananya' from 'ananya@gmail.com'</span>
+<span class="fn">INITCAP</span>(name)                  <span class="cm">-- 'Ananya Kumar' (Title Case)</span>
+<span class="fn">LPAD</span>(<span class="fn">CAST</span>(id <span class="kw">AS</span> TEXT),<span class="num">6</span>,<span class="st">'0'</span>) <span class="cm">-- '000042' (zero-pad)</span>
+
+<span class="cm">-- Extract domain from email</span>
+<span class="kw">SELECT</span>
+  email,
+  <span class="fn">SPLIT_PART</span>(email, <span class="st">'@'</span>, <span class="num">2</span>) <span class="kw">AS</span> domain,
+  <span class="fn">SPLIT_PART</span>(<span class="fn">SPLIT_PART</span>(email, <span class="st">'@'</span>, <span class="num">2</span>), <span class="st">'.'</span>, <span class="num">1</span>) <span class="kw">AS</span> provider
+<span class="kw">FROM</span> <span class="tb">users</span>;</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 9 — NULLs ========== -->
+<div class="mod" id="m9">
+  <div class="mod-hd">
+    <div class="mod-num">09</div>
+    <div><div class="mod-title">NULL Handling — The Silent Data Killer</div>
+    <div class="mod-sub">COALESCE, NULLIF, ISNULL — NULLs in JOINs, aggregations, and comparisons</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Everything About NULLs</div><div class="tags"><span class="tag t-must">Trap Alert</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>Mental Model — NULL is "Unknown"</strong>NULL ≠ 0. NULL ≠ empty string. NULL means "we don't know this value." Any comparison with NULL returns NULL (unknown), not TRUE or FALSE. 5 = NULL → NULL. NULL = NULL → NULL. This is why = doesn't work and IS NULL is needed.</div>
+      <div class="code-block"><div class="code-top">null_handling.sql</div><pre><span class="cm">-- COALESCE — return first non-NULL value</span>
+<span class="fn">COALESCE</span>(discount_pct, <span class="num">0</span>)            <span class="cm">-- if NULL, use 0</span>
+<span class="fn">COALESCE</span>(promo_code, promo_name, <span class="st">'NONE'</span>) <span class="cm">-- first non-null of three</span>
+
+<span class="cm">-- NULLIF — return NULL if two values are equal</span>
+<span class="fn">NULLIF</span>(denominator, <span class="num">0</span>)              <span class="cm">-- prevents division by zero!</span>
+<span class="cm">-- 100 / NULLIF(0, 0) → NULL (safe)  vs  100/0 → ERROR (crash)</span>
+amount / <span class="fn">NULLIF</span>(prev_amount, <span class="num">0</span>)     <span class="cm">-- always use this in % calculations</span>
+
+<span class="cm">-- NULLs in aggregates (surprising behavior)</span>
+<span class="fn">COUNT</span>(*)           <span class="cm">-- includes NULL rows</span>
+<span class="fn">COUNT</span>(rating)      <span class="cm">-- EXCLUDES NULL ratings</span>
+<span class="fn">AVG</span>(rating)        <span class="cm">-- ignores NULLs — can be misleading</span>
+<span class="fn">SUM</span>(rating)        <span class="cm">-- ignores NULLs — SUM of all non-NULL</span>
+<span class="fn">MAX</span>(rating)        <span class="cm">-- ignores NULLs</span>
+
+<span class="cm">-- NULL in ORDER BY</span>
+<span class="kw">ORDER BY</span> rating <span class="kw">DESC NULLS LAST</span>   <span class="cm">-- NULLs appear at end</span>
+<span class="kw">ORDER BY</span> rating <span class="kw">ASC NULLS FIRST</span>   <span class="cm">-- NULLs appear at start</span>
+
+<span class="cm">-- NULL safe division — the pattern every analyst must know</span>
+<span class="kw">SELECT</span>
+  month,
+  revenue,
+  prev_revenue,
+  <span class="fn">ROUND</span>(
+    <span class="num">100.0</span> * (revenue - prev_revenue) / <span class="fn">NULLIF</span>(prev_revenue, <span class="num">0</span>),
+  <span class="num">2</span>) <span class="kw">AS</span> growth_pct  <span class="cm">-- NULL if prev_revenue is 0, not an error</span>
+<span class="kw">FROM</span> monthly_revenue;
+
+<span class="cm">-- Counting NULLs explicitly</span>
+<span class="fn">COUNT</span>(*) - <span class="fn">COUNT</span>(rating) <span class="kw">AS</span> null_count  <span class="cm">-- elegant way to count NULLs</span>
+
+<span class="cm">-- NULL in JOIN — NULLs never match each other</span>
+<span class="cm">-- If join key has NULLs, those rows are excluded from INNER JOIN</span>
+<span class="cm">-- Always check for NULL join keys in real data!</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">orders</span> <span class="kw">WHERE</span> user_id <span class="kw">IS NOT NULL</span>;  <span class="cm">-- clean before joining</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 10 — ANALYTICAL PATTERNS ========== -->
+<div class="mod" id="m10">
+  <div class="mod-hd">
+    <div class="mod-num">10</div>
+    <div><div class="mod-title">Analytical SQL Patterns</div>
+    <div class="mod-sub">De-duplication, gaps & islands, consecutive events, percentile analysis</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Pattern 1: De-duplication — Get One Row Per Group</div><div class="tags"><span class="tag t-must">Asked Everywhere</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">dedup.sql</div><pre><span class="cm">-- Most recent order per user (de-duplication)</span>
+<span class="cm">-- Method 1: ROW_NUMBER (most readable, preferred)</span>
+<span class="kw">WITH</span> ranked <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> *,
+    <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> ordered_at <span class="kw">DESC</span>) <span class="kw">AS</span> rn
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+)
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> ranked <span class="kw">WHERE</span> rn = <span class="num">1</span>;
+
+<span class="cm">-- Method 2: Correlated subquery</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> <span class="tb">orders</span> o
+<span class="kw">WHERE</span> ordered_at = (
+  <span class="kw">SELECT</span> <span class="fn">MAX</span>(ordered_at) <span class="kw">FROM</span> <span class="tb">orders</span>
+  <span class="kw">WHERE</span> user_id = o.user_id
+);
+
+<span class="cm">-- Deduplicate exact duplicate rows</span>
+<span class="kw">WITH</span> deduped <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> *, <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id, ordered_at, amount <span class="kw">ORDER BY</span> order_id) <span class="kw">AS</span> rn
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+)
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> deduped <span class="kw">WHERE</span> rn = <span class="num">1</span>;</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Pattern 2: Gaps & Islands — Consecutive Events</div><div class="tags"><span class="tag t-hard">Hard</span><span class="tag t-faang">FAANG</span></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>What is Gaps & Islands?</strong>"Find users who were active for 3 consecutive days." "Find streaks." "Find periods of continuous activity." The classic approach: row_number minus a date sequence creates groups (islands) for consecutive events.</div>
+      <div class="code-block"><div class="code-top">gaps_islands.sql</div><pre><span class="cm">-- Find consecutive login streaks per user</span>
+<span class="kw">WITH</span>
+
+<span class="cm">-- Step 1: Get distinct login dates per user</span>
+login_days <span class="kw">AS</span> (
+  <span class="kw">SELECT DISTINCT</span> user_id, event_at::DATE <span class="kw">AS</span> login_date
+  <span class="kw">FROM</span> <span class="tb">events</span>
+  <span class="kw">WHERE</span> event_type = <span class="st">'login'</span>
+),
+
+<span class="cm">-- Step 2: Assign row number per user, subtract from date → group key</span>
+grouped <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id, login_date,
+    login_date - (<span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> login_date))::INT <span class="kw">AS</span> grp
+    <span class="cm">-- Consecutive dates get the SAME grp value! This is the trick.</span>
+  <span class="kw">FROM</span> login_days
+),
+
+<span class="cm">-- Step 3: Group by user + grp → each consecutive run is one island</span>
+streaks <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">MIN</span>(login_date) <span class="kw">AS</span> streak_start,
+    <span class="fn">MAX</span>(login_date) <span class="kw">AS</span> streak_end,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> streak_length
+  <span class="kw">FROM</span>  grouped
+  <span class="kw">GROUP BY</span> user_id, grp
+)
+
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> streaks
+<span class="kw">WHERE</span> streak_length >= <span class="num">3</span>        <span class="cm">-- streaks of 3+ days</span>
+<span class="kw">ORDER BY</span> streak_length <span class="kw">DESC</span>;   <span class="cm">-- longest first</span></pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 11 — PRODUCT SQL ========== -->
+<div class="mod" id="m11">
+  <div class="mod-hd">
+    <div class="mod-num">11</div>
+    <div><div class="mod-title">Product Analytics SQL Patterns</div>
+    <div class="mod-sub">Cohort, Retention, Funnel, DAU/MAU, A/B Testing — what top product companies test</div></div>
+  </div>
+
+  <div class="pattern-card">
+    <div class="pattern-head"><div class="pattern-icon">👥</div><div><div class="pattern-name">Cohort Analysis</div><div class="pattern-desc">Group users by signup month, track their behavior over time</div></div></div>
+    <div class="card-body">
+      <div class="analogy"><strong>What is a Cohort?</strong>Users who joined in January 2024 are "the January cohort." Cohort analysis tracks what percentage of that group came back in Month 2, Month 3, etc. This reveals whether product improvements are actually improving retention.</div>
+      <div class="code-block"><div class="code-top">cohort_analysis.sql — Full cohort retention table</div><pre><span class="kw">WITH</span>
+
+<span class="cm">-- Step 1: Assign each user their cohort (signup month)</span>
+user_cohorts <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, joined_at) <span class="kw">AS</span> cohort_month
+  <span class="kw">FROM</span> <span class="tb">users</span>
+),
+
+<span class="cm">-- Step 2: Get each user's activity months</span>
+user_activity <span class="kw">AS</span> (
+  <span class="kw">SELECT DISTINCT</span>
+    e.user_id,
+    <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, e.event_at) <span class="kw">AS</span> activity_month
+  <span class="kw">FROM</span> <span class="tb">events</span> e
+  <span class="kw">WHERE</span> e.event_type <span class="kw">IN</span> (<span class="st">'login'</span>,<span class="st">'lesson_start'</span>,<span class="st">'purchase'</span>)
+),
+
+<span class="cm">-- Step 3: Join and compute month number (0=joined, 1=month after, etc.)</span>
+cohort_data <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    uc.cohort_month,
+    ua.user_id,
+    <span class="fn">EXTRACT</span>(<span class="kw">MONTH FROM</span> <span class="fn">AGE</span>(ua.activity_month, uc.cohort_month)) <span class="kw">AS</span> month_number
+  <span class="kw">FROM</span>  user_cohorts  uc
+  <span class="kw">JOIN</span>  user_activity ua <span class="kw">ON</span> uc.user_id = ua.user_id
+  <span class="kw">WHERE</span> ua.activity_month >= uc.cohort_month
+),
+
+<span class="cm">-- Step 4: Cohort sizes (how many users in each cohort)</span>
+cohort_sizes <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> cohort_month, <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">AS</span> cohort_size
+  <span class="kw">FROM</span>  user_cohorts
+  <span class="kw">GROUP BY</span> cohort_month
+)
+
+<span class="cm">-- Step 5: Final retention table</span>
+<span class="kw">SELECT</span>
+  cd.cohort_month,
+  cs.cohort_size,
+  cd.month_number,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> cd.user_id) <span class="kw">AS</span> active_users,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span> * <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> cd.user_id) / cs.cohort_size, <span class="num">1</span>) <span class="kw">AS</span> retention_pct
+<span class="kw">FROM</span>  cohort_data  cd
+<span class="kw">JOIN</span>  cohort_sizes cs <span class="kw">ON</span> cd.cohort_month = cs.cohort_month
+<span class="kw">GROUP BY</span> cd.cohort_month, cs.cohort_size, cd.month_number
+<span class="kw">ORDER BY</span> cd.cohort_month, cd.month_number;</pre></div>
+    </div>
+  </div>
+
+  <div class="pattern-card">
+    <div class="pattern-head"><div class="pattern-icon">🔄</div><div><div class="pattern-name">Retention Analysis — Day 1, Day 7, Day 30</div><div class="pattern-desc">What % of users come back after 1, 7, 30 days</div></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">retention.sql — Classic N-day retention</div><pre><span class="kw">WITH</span>
+
+first_activity <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> user_id, <span class="fn">MIN</span>(event_at::DATE) <span class="kw">AS</span> first_date
+  <span class="kw">FROM</span>  <span class="tb">events</span>
+  <span class="kw">GROUP BY</span> user_id
+),
+
+<span class="cm">-- Check if user was active on day 1, 7, 30 after first activity</span>
+retention <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    f.user_id,
+    f.first_date,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> e.event_at::DATE = f.first_date + <span class="num">1</span>  <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> day1,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> e.event_at::DATE = f.first_date + <span class="num">7</span>  <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> day7,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> e.event_at::DATE = f.first_date + <span class="num">30</span> <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> day30
+  <span class="kw">FROM</span>  first_activity f
+  <span class="kw">LEFT JOIN</span> <span class="tb">events</span> e <span class="kw">ON</span> f.user_id = e.user_id
+  <span class="kw">GROUP BY</span> f.user_id, f.first_date
+)
+
+<span class="kw">SELECT</span>
+  first_date,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> new_users,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(day1) /<span class="fn">COUNT</span>(*),<span class="num">1</span>) <span class="kw">AS</span> d1_retention,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(day7) /<span class="fn">COUNT</span>(*),<span class="num">1</span>) <span class="kw">AS</span> d7_retention,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(day30)/<span class="fn">COUNT</span>(*),<span class="num">1</span>) <span class="kw">AS</span> d30_retention
+<span class="kw">FROM</span> retention
+<span class="kw">GROUP BY</span> first_date
+<span class="kw">ORDER BY</span> first_date;</pre></div>
+    </div>
+  </div>
+
+  <div class="pattern-card">
+    <div class="pattern-head"><div class="pattern-icon">🌪️</div><div><div class="pattern-name">Funnel Analysis</div><div class="pattern-desc">Conversion at each step of user journey</div></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">funnel.sql — Signup → Lesson → Purchase funnel</div><pre><span class="kw">WITH</span>
+
+funnel_steps <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> event_type = <span class="st">'signup'</span>           <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> did_signup,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> event_type = <span class="st">'lesson_start'</span>     <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> did_lesson,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> event_type = <span class="st">'lesson_complete'</span>  <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> did_complete,
+    <span class="fn">MAX</span>(<span class="kw">CASE WHEN</span> event_type = <span class="st">'purchase'</span>         <span class="kw">THEN</span> <span class="num">1</span> <span class="kw">ELSE</span> <span class="num">0</span> <span class="kw">END</span>) <span class="kw">AS</span> did_purchase
+  <span class="kw">FROM</span> <span class="tb">events</span>
+  <span class="kw">GROUP BY</span> user_id
+)
+
+<span class="kw">SELECT</span>
+  <span class="fn">COUNT</span>(*)                     <span class="kw">AS</span> total_users,
+  <span class="fn">SUM</span>(did_signup)              <span class="kw">AS</span> step1_signup,
+  <span class="fn">SUM</span>(did_lesson)              <span class="kw">AS</span> step2_lesson,
+  <span class="fn">SUM</span>(did_complete)            <span class="kw">AS</span> step3_complete,
+  <span class="fn">SUM</span>(did_purchase)            <span class="kw">AS</span> step4_purchase,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(did_lesson) /<span class="fn">NULLIF</span>(<span class="fn">SUM</span>(did_signup),<span class="num">0</span>),<span class="num">1</span>) <span class="kw">AS</span> step1_to_2_cvr,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(did_complete)/<span class="fn">NULLIF</span>(<span class="fn">SUM</span>(did_lesson),<span class="num">0</span>),<span class="num">1</span>) <span class="kw">AS</span> step2_to_3_cvr,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(did_purchase)/<span class="fn">NULLIF</span>(<span class="fn">SUM</span>(did_complete),<span class="num">0</span>),<span class="num">1</span>) <span class="kw">AS</span> step3_to_4_cvr,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*<span class="fn">SUM</span>(did_purchase)/<span class="fn">NULLIF</span>(<span class="fn">SUM</span>(did_signup),<span class="num">0</span>),<span class="num">1</span>)  <span class="kw">AS</span> overall_cvr
+<span class="kw">FROM</span> funnel_steps;</pre></div>
+    </div>
+  </div>
+
+  <div class="pattern-card">
+    <div class="pattern-head"><div class="pattern-icon">📊</div><div><div class="pattern-name">DAU, WAU, MAU — Engagement Metrics</div><div class="pattern-desc">Daily/Weekly/Monthly Active Users — the heartbeat of product analytics</div></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">dau_mau.sql</div><pre><span class="cm">-- Daily Active Users (DAU)</span>
+<span class="kw">SELECT</span>
+  event_at::DATE <span class="kw">AS</span> dt,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">AS</span> dau
+<span class="kw">FROM</span>  <span class="tb">events</span>
+<span class="kw">GROUP BY</span> <span class="num">1</span> <span class="kw">ORDER BY</span> <span class="num">1</span>;
+
+<span class="cm">-- Monthly Active Users (MAU) — unique users in last 30 days</span>
+<span class="kw">SELECT</span>
+  <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, event_at) <span class="kw">AS</span> month,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">AS</span> mau
+<span class="kw">FROM</span>  <span class="tb">events</span>
+<span class="kw">GROUP BY</span> <span class="num">1</span> <span class="kw">ORDER BY</span> <span class="num">1</span>;
+
+<span class="cm">-- DAU/MAU ratio — stickiness metric (higher = better engagement)</span>
+<span class="kw">WITH</span>
+dau <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> event_at::DATE <span class="kw">AS</span> dt, <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">AS</span> daily_users
+  <span class="kw">FROM</span>  <span class="tb">events</span> <span class="kw">GROUP BY</span> <span class="num">1</span>
+),
+mau <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, event_at)::DATE <span class="kw">AS</span> month,
+         <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> user_id) <span class="kw">AS</span> monthly_users
+  <span class="kw">FROM</span>  <span class="tb">events</span> <span class="kw">GROUP BY</span> <span class="num">1</span>
+)
+<span class="kw">SELECT</span>
+  d.dt,
+  d.daily_users <span class="kw">AS</span> dau,
+  m.monthly_users <span class="kw">AS</span> mau,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span> * d.daily_users / <span class="fn">NULLIF</span>(m.monthly_users,<span class="num">0</span>), <span class="num">1</span>) <span class="kw">AS</span> stickiness_pct
+<span class="kw">FROM</span>  dau d
+<span class="kw">JOIN</span>  mau m <span class="kw">ON</span> <span class="fn">DATE_TRUNC</span>(<span class="st">'month'</span>, d.dt) = m.month
+<span class="kw">ORDER BY</span> d.dt;
+
+<span class="cm">-- New vs Returning users per day</span>
+<span class="kw">WITH</span> first_seen <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> user_id, <span class="fn">MIN</span>(event_at::DATE) <span class="kw">AS</span> first_date <span class="kw">FROM</span> <span class="tb">events</span> <span class="kw">GROUP BY</span> user_id
+)
+<span class="kw">SELECT</span>
+  e.event_at::DATE <span class="kw">AS</span> dt,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> <span class="kw">CASE WHEN</span> e.event_at::DATE = f.first_date <span class="kw">THEN</span> e.user_id <span class="kw">END</span>) <span class="kw">AS</span> new_users,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> <span class="kw">CASE WHEN</span> e.event_at::DATE > f.first_date  <span class="kw">THEN</span> e.user_id <span class="kw">END</span>) <span class="kw">AS</span> returning_users
+<span class="kw">FROM</span>  <span class="tb">events</span> e
+<span class="kw">JOIN</span>  first_seen f <span class="kw">ON</span> e.user_id = f.user_id
+<span class="kw">GROUP BY</span> <span class="num">1</span> <span class="kw">ORDER BY</span> <span class="num">1</span>;</pre></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODULE 12 — HARD PROBLEMS ========== -->
+<div class="mod" id="m12">
+  <div class="mod-hd">
+    <div class="mod-num">12</div>
+    <div><div class="mod-title">Hard Interview Problems — FAANG Style</div>
+    <div class="mod-sub">Step-by-step solutions to the hardest SQL asked at top companies</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Problem 1: User Activity Histogram</div><div class="tags"><span class="tag t-hard">Hard</span><span class="tag t-faang">Meta/Facebook</span></div></div>
+    <div class="card-body">
+      <div class="int-alert"><strong>Problem</strong><ul><li>Write a SQL query to find the number of users who were active for at least 1 day, 2 days, 3 days, and so on, during Q1 2024. Arrange the result as: active_days | user_count | pct_of_total</li></ul></div>
+      <div class="solution">
+        <div class="sol-hd">Step-by-Step Solution</div>
+        <div class="sol-steps">
+          <div class="sol-step"><span class="sol-num">1</span><span>Count distinct active days per user in Q1 2024</span></div>
+          <div class="sol-step"><span class="sol-num">2</span><span>Group by that count to get distribution</span></div>
+          <div class="sol-step"><span class="sol-num">3</span><span>Add cumulative count for "at least N days" interpretation</span></div>
+        </div>
+      </div>
+      <div class="code-block"><div class="code-top">histogram.sql</div><pre><span class="kw">WITH</span>
+user_active_days <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> event_at::DATE) <span class="kw">AS</span> active_days
+  <span class="kw">FROM</span>  <span class="tb">events</span>
+  <span class="kw">WHERE</span> event_at >= <span class="st">'2024-01-01'</span> <span class="kw">AND</span> event_at &lt; <span class="st">'2024-04-01'</span>
+  <span class="kw">GROUP BY</span> user_id
+),
+distribution <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    active_days,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> user_count
+  <span class="kw">FROM</span>  user_active_days
+  <span class="kw">GROUP BY</span> active_days
+)
+<span class="kw">SELECT</span>
+  active_days,
+  user_count,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span>*user_count/<span class="fn">SUM</span>(user_count)<span class="kw">OVER</span>(),<span class="num">2</span>) <span class="kw">AS</span> pct,
+  <span class="cm">-- "at least N days" = sum of all users with days >= current</span>
+  <span class="fn">SUM</span>(user_count) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> active_days <span class="kw">DESC</span>
+    <span class="kw">ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</span>) <span class="kw">AS</span> at_least_n_users
+<span class="kw">FROM</span>  distribution
+<span class="kw">ORDER BY</span> active_days;</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Problem 2: Median Calculation (No MEDIAN function in most DBs)</div><div class="tags"><span class="tag t-hard">Hard</span><span class="tag t-faang">Amazon/Flipkart</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">median.sql — Two approaches</div><pre><span class="cm">-- Method 1: PERCENTILE_CONT (PostgreSQL, BigQuery)</span>
+<span class="kw">SELECT</span>
+  <span class="fn">PERCENTILE_CONT</span>(<span class="num">0.5</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> amount) <span class="kw">AS</span> median_amount,
+  <span class="fn">PERCENTILE_CONT</span>(<span class="num">0.25</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> amount) <span class="kw">AS</span> p25,
+  <span class="fn">PERCENTILE_CONT</span>(<span class="num">0.75</span>) <span class="kw">WITHIN GROUP</span> (<span class="kw">ORDER BY</span> amount) <span class="kw">AS</span> p75
+<span class="kw">FROM</span> <span class="tb">orders</span>;
+
+<span class="cm">-- Method 2: ROW_NUMBER trick (works everywhere)</span>
+<span class="kw">WITH</span> ranked <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    amount,
+    <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> amount) <span class="kw">AS</span> rn,
+    <span class="fn">COUNT</span>(*) <span class="kw">OVER</span>() <span class="kw">AS</span> total
+  <span class="kw">FROM</span> <span class="tb">orders</span>
+)
+<span class="kw">SELECT</span> <span class="fn">AVG</span>(amount) <span class="kw">AS</span> median
+<span class="kw">FROM</span>  ranked
+<span class="kw">WHERE</span> rn <span class="kw">IN</span> (<span class="fn">FLOOR</span>((total+<span class="num">1</span>)/<span class="num">2.0</span>), <span class="fn">CEIL</span>((total+<span class="num">1</span>)/<span class="num">2.0</span>));
+<span class="cm">-- Handles both even and odd number of rows correctly</span></pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Problem 3: Friend Recommendation (Graph Problem)</div><div class="tags"><span class="tag t-hard">Hard</span><span class="tag t-faang">Meta/LinkedIn</span></div></div>
+    <div class="card-body">
+      <div class="int-alert"><strong>Problem</strong><ul><li>Given a friendships table (user1_id, user2_id), find pairs of users who have at least 2 mutual friends but are NOT already friends with each other.</li></ul></div>
+      <div class="code-block"><div class="code-top">mutual_friends.sql</div><pre><span class="cm">-- friendships table: user1_id, user2_id (undirected — store both ways)</span>
+<span class="kw">WITH</span>
+
+<span class="cm">-- Normalize: ensure (A,B) and (B,A) both exist</span>
+all_friends <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> user1_id <span class="kw">AS</span> user_id, user2_id <span class="kw">AS</span> friend_id <span class="kw">FROM</span> friendships
+  <span class="kw">UNION ALL</span>
+  <span class="kw">SELECT</span> user2_id, user1_id <span class="kw">FROM</span> friendships
+),
+
+<span class="cm">-- Find mutual friends: A-C and B-C → A and B share friend C</span>
+mutual <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    a.user_id <span class="kw">AS</span> person_a,
+    b.user_id <span class="kw">AS</span> person_b,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> mutual_friend_count
+  <span class="kw">FROM</span>  all_friends a
+  <span class="kw">JOIN</span>  all_friends b <span class="kw">ON</span> a.friend_id = b.friend_id
+                      <span class="kw">AND</span> a.user_id &lt; b.user_id   <span class="cm">-- avoid duplicates</span>
+                      <span class="kw">AND</span> a.user_id != b.user_id   <span class="cm">-- not same person</span>
+  <span class="kw">GROUP BY</span> a.user_id, b.user_id
+  <span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) >= <span class="num">2</span>         <span class="cm">-- at least 2 mutual friends</span>
+)
+
+<span class="cm">-- Exclude pairs who are ALREADY friends</span>
+<span class="kw">SELECT</span> m.person_a, m.person_b, m.mutual_friend_count
+<span class="kw">FROM</span>  mutual m
+<span class="kw">WHERE</span> <span class="kw">NOT EXISTS</span> (
+  <span class="kw">SELECT</span> <span class="num">1</span> <span class="kw">FROM</span> all_friends af
+  <span class="kw">WHERE</span> af.user_id = m.person_a <span class="kw">AND</span> af.friend_id = m.person_b
+)
+<span class="kw">ORDER BY</span> mutual_friend_count <span class="kw">DESC</span>;</pre></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hd"><div class="card-title">Problem 4: Longest Streak of Daily Purchases</div><div class="tags"><span class="tag t-hard">Hard</span><span class="tag t-faang">Flipkart/Amazon</span></div></div>
+    <div class="card-body">
+      <div class="code-block"><div class="code-top">longest_streak.sql — Gaps & Islands applied</div><pre><span class="kw">WITH</span>
+
+<span class="cm">-- Step 1: One row per user per purchase day</span>
+purchase_days <span class="kw">AS</span> (
+  <span class="kw">SELECT DISTINCT</span> user_id, ordered_at::DATE <span class="kw">AS</span> purchase_date
+  <span class="kw">FROM</span>  <span class="tb">orders</span>
+  <span class="kw">WHERE</span> status = <span class="st">'completed'</span>
+),
+
+<span class="cm">-- Step 2: The gaps & islands trick</span>
+grouped <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id, purchase_date,
+    purchase_date - <span class="fn">CAST</span>(
+      <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span>(<span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> purchase_date)
+    <span class="kw">AS</span> INT) <span class="kw">AS</span> grp
+  <span class="kw">FROM</span> purchase_days
+),
+
+<span class="cm">-- Step 3: Each streak = same grp value per user</span>
+streaks <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id, grp,
+    <span class="fn">MIN</span>(purchase_date) <span class="kw">AS</span> streak_start,
+    <span class="fn">MAX</span>(purchase_date) <span class="kw">AS</span> streak_end,
+    <span class="fn">COUNT</span>(*) <span class="kw">AS</span> streak_days
+  <span class="kw">FROM</span>  grouped
+  <span class="kw">GROUP BY</span> user_id, grp
+),
+
+<span class="cm">-- Step 4: Longest streak per user</span>
+max_streaks <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">MAX</span>(streak_days) <span class="kw">AS</span> max_streak
+  <span class="kw">FROM</span>  streaks
+  <span class="kw">GROUP BY</span> user_id
+)
+
+<span class="kw">SELECT</span>
+  ms.user_id,
+  u.name,
+  ms.max_streak,
+  s.streak_start,
+  s.streak_end
+<span class="kw">FROM</span>  max_streaks ms
+<span class="kw">JOIN</span>  streaks s <span class="kw">ON</span> ms.user_id = s.user_id <span class="kw">AND</span> ms.max_streak = s.streak_days
+<span class="kw">JOIN</span>  <span class="tb">users</span>   u <span class="kw">ON</span> ms.user_id = u.user_id
+<span class="kw">ORDER BY</span> ms.max_streak <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> <span class="num">10</span>;</pre></div>
+    </div>
+  </div>
+
+  <div class="practice">
+    <h3>🔥 Final Practice Set — 25LPA+ Level Questions</h3>
+    <div class="pq"><span class="pqn m">H1</span><div>Write a query to find the second highest revenue-generating course in EACH category (not overall). Return category, course_title, revenue, rank.</div><span class="pq-company">Coursera</span></div>
+    <div class="pq"><span class="pqn m">H2</span><div>Find users who made their first purchase within 7 days of signing up. What % of all users is this? Show month-wise trend.</div><span class="pq-company">Meesho/Zepto</span></div>
+    <div class="pq"><span class="pqn h">H3</span><div>Write a query to compute 30-day rolling revenue for each day in 2024. Fill days with no orders as 0 (hint: generate a date series).</div><span class="pq-company">Google</span></div>
+    <div class="pq"><span class="pqn h">H4</span><div>Build a full month-1 cohort retention table. Rows = signup month cohort. Columns = Month 0 (signup), Month 1, Month 2, Month 3 retention %.</div><span class="pq-company">Swiggy/Zomato</span></div>
+    <div class="pq"><span class="pqn h">H5</span><div>Find users who downgraded their plan (pro → basic → free) at any point. Use LAG to detect plan changes.</div><span class="pq-company">Razorpay/CRED</span></div>
+    <div class="pq"><span class="pqn h">H6</span><div>LeetCode 185: Department Top Three Salaries. Find employees who earn in top 3 unique salaries within their department.</div><span class="pq-company">Amazon/Microsoft</span></div>
+    <div class="pq"><span class="pqn h">H7</span><div>LeetCode 601: Human Traffic of Stadium. Find 3 or more consecutive stadium rows with >= 100 people each day.</div><span class="pq-company">Meta</span></div>
+  </div>
+</div>
+
+<!-- ========== MODULE 13 — CHEAT SHEET ========== -->
+<div class="mod" id="m13">
+  <div class="mod-hd">
+    <div class="mod-num">13</div>
+    <div><div class="mod-title">Interview Cheat Sheet + Optimization Tips</div>
+    <div class="mod-sub">Quick reference for the day before your interview</div></div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-box">
+      <h4>Execution Order</h4>
+      <ul>
+        <li>1 — FROM / JOIN</li>
+        <li>2 — WHERE</li>
+        <li>3 — GROUP BY</li>
+        <li>4 — HAVING</li>
+        <li>5 — SELECT</li>
+        <li>6 — ORDER BY</li>
+        <li>7 — LIMIT</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>JOIN Quick Reference</h4>
+      <ul>
+        <li>INNER — only matches</li>
+        <li>LEFT — all left + matches</li>
+        <li>Anti-JOIN — LEFT + WHERE IS NULL</li>
+        <li>FULL OUTER — all both sides</li>
+        <li>CROSS — all combinations</li>
+        <li>SELF — table joins itself</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>Window Function Reference</h4>
+      <ul>
+        <li>ROW_NUMBER — unique, no ties</li>
+        <li>RANK — gaps after ties</li>
+        <li>DENSE_RANK — no gaps</li>
+        <li>LAG(col,n,default) — look back</li>
+        <li>LEAD(col,n,default) — look ahead</li>
+        <li>SUM OVER — running total</li>
+        <li>NTILE(n) — bucket into n groups</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>NULL Functions</h4>
+      <ul>
+        <li>COALESCE(a,b,c) — first non-null</li>
+        <li>NULLIF(a,b) — null if a=b</li>
+        <li>IS NULL / IS NOT NULL</li>
+        <li>NULLS LAST in ORDER BY</li>
+        <li>COUNT(*) includes nulls</li>
+        <li>COUNT(col) excludes nulls</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>Date Functions</h4>
+      <ul>
+        <li>DATE_TRUNC('month',dt)</li>
+        <li>EXTRACT(YEAR FROM dt)</li>
+        <li>CURRENT_DATE — today</li>
+        <li>dt + INTERVAL '7 days'</li>
+        <li>date1 - date2 → integer days</li>
+        <li>TO_DATE(str,'YYYY-MM-DD')</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>Optimization Tips</h4>
+      <ul>
+        <li>Filter early — WHERE before JOIN</li>
+        <li>Avoid SELECT * in production</li>
+        <li>Use EXISTS not IN for large sets</li>
+        <li>EXPLAIN ANALYZE to see plan</li>
+        <li>Partition large tables by date</li>
+        <li>Index on join keys and WHERE cols</li>
+        <li>LIMIT in subqueries when possible</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>Product SQL Patterns</h4>
+      <ul>
+        <li>Cohort = group by signup month</li>
+        <li>Retention = % back after N days</li>
+        <li>Funnel = MAX(CASE WHEN step)</li>
+        <li>DAU = COUNT(DISTINCT user_id)</li>
+        <li>Stickiness = DAU/MAU × 100</li>
+        <li>LTV = SUM(revenue) per user</li>
+      </ul>
+    </div>
+    <div class="cheat-box">
+      <h4>Top-N Pattern (Must Know)</h4>
+      <ul>
+        <li>WITH ranked AS (SELECT *, ROW_NUMBER() OVER(PARTITION BY grp ORDER BY col DESC) rn FROM t)</li>
+        <li>SELECT * FROM ranked WHERE rn &lt;= N</li>
+        <li>Use RANK for ties allowed</li>
+        <li>Use ROW_NUMBER for exactly N</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="int-alert" style="margin-top:20px">
+    <strong>🧠 The 5 Interview Questions That Appear at EVERY Company</strong>
+    <ul>
+      <li>"Find the Nth highest salary/revenue" → DENSE_RANK() OVER(ORDER BY col DESC) = N</li>
+      <li>"Users who never did X" → LEFT JOIN + WHERE right.id IS NULL (Anti-Join)</li>
+      <li>"Month-over-month growth" → LAG(revenue) OVER(ORDER BY month) then % change</li>
+      <li>"Top N per group" → ROW_NUMBER() OVER(PARTITION BY group ORDER BY col DESC) + WHERE rn &lt;= N</li>
+      <li>"Running total/cumulative sum" → SUM(col) OVER(ORDER BY date ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="margin-top:60px;padding:36px 0;border-top:1px solid var(--border);text-align:center">
+  <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:2px">NITK SURATHKAL · MINING ENGINEERING → DATA SCIENCE · SQL MASTERY</p>
+  <p style="margin-top:10px;color:var(--muted);font-size:14px;max-width:600px;margin-inline:auto;line-height:1.7">You don't master SQL by reading. Open a database (PostgreSQL is free), recreate these tables, and run every query. Then solve the practice problems without looking. That's the only path.</p>
+</div>
+
+</div>
+</body>
+</html>
