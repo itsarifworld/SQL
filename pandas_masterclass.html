@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pandas Masterclass — Placement Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2128;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #7d8590;
+  --accent: #f0a500;
+  --accent2: #58a6ff;
+  --green: #3fb950;
+  --red: #f85149;
+  --purple: #bc8cff;
+  --orange: #ffa657;
+  --teal: #39d353;
+  --pink: #ff7b72;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* HERO */
+.hero {
+  background: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+  border-bottom: 1px solid var(--border);
+  padding: 60px 40px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::after {
+  content: 'pd';
+  position: absolute;
+  right: 40px; top: 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 200px;
+  font-weight: 600;
+  color: rgba(240,165,0,0.04);
+  pointer-events: none;
+  line-height: 1;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(240,165,0,0.1);
+  border: 1px solid rgba(240,165,0,0.3);
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+}
+.hero h1 {
+  font-size: clamp(32px, 5vw, 60px);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 14px;
+}
+.hero h1 span { color: var(--accent); }
+.hero p { color: var(--muted); max-width: 600px; font-size: 16px; }
+
+/* PROGRESS BAR */
+.progress-bar {
+  display: flex;
+  gap: 0;
+  margin-top: 36px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  width: fit-content;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+.prog-item {
+  padding: 10px 18px;
+  border-right: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.prog-item:last-child { border-right: none; }
+.prog-item:hover { background: var(--surface2); color: var(--text); }
+.prog-item.active { background: var(--accent); color: #000; font-weight: 600; }
+.prog-item a { text-decoration: none; color: inherit; }
+
+/* LAYOUT */
+.wrap { max-width: 1000px; margin: 0 auto; padding: 0 28px 80px; }
+
+/* MODULE */
+.module {
+  margin-top: 48px;
+  scroll-margin-top: 20px;
+}
+.module-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+.module-num {
+  width: 42px; height: 42px;
+  background: var(--accent);
+  color: #000;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.module-title { font-size: 22px; font-weight: 700; }
+.module-sub { font-size: 13px; color: var(--muted); }
+
+/* CONCEPT BLOCK */
+.concept {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.concept-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.concept-title {
+  font-size: 15px;
+  font-weight: 600;
+  display: flex; align-items: center; gap: 10px;
+}
+.concept-body { padding: 20px; }
+
+/* ANALOGY BOX */
+.analogy {
+  background: rgba(88,166,255,0.06);
+  border: 1px solid rgba(88,166,255,0.2);
+  border-left: 3px solid var(--accent2);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.analogy strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent2);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* INTERVIEW ALERT */
+.interview-alert {
+  background: rgba(240,165,0,0.06);
+  border: 1px solid rgba(240,165,0,0.25);
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.interview-alert strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.interview-alert ul { list-style: none; }
+.interview-alert ul li { padding: 3px 0; display: flex; gap: 8px; }
+.interview-alert ul li::before { content: '?'; color: var(--accent); font-weight: 700; flex-shrink: 0; }
+
+/* WARNING BOX */
+.warning {
+  background: rgba(248,81,73,0.06);
+  border: 1px solid rgba(248,81,73,0.25);
+  border-left: 3px solid var(--red);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.warning strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--red);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* TIP BOX */
+.tip {
+  background: rgba(63,185,80,0.06);
+  border: 1px solid rgba(63,185,80,0.2);
+  border-left: 3px solid var(--green);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+.tip strong {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--green);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+/* EXPLANATION */
+.explain {
+  color: #c9d1d9;
+  font-size: 14px;
+  margin-bottom: 14px;
+  line-height: 1.75;
+}
+
+/* CODE BLOCK */
+.code-block {
+  background: #010409;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin: 14px 0;
+  overflow: hidden;
+}
+.code-label {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.code-label span { color: var(--green); }
+pre {
+  padding: 18px 20px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 1.7;
+  overflow-x: auto;
+  color: #c9d1d9;
+  tab-size: 4;
+}
+
+/* Syntax highlighting */
+.kw { color: #ff7b72; }       /* keyword */
+.fn { color: #d2a8ff; }       /* function */
+.st { color: #a5d6ff; }       /* string */
+.cm { color: #8b949e; font-style: italic; }  /* comment */
+.nm { color: #79c0ff; }       /* variable name */
+.op { color: #ffa657; }       /* operator/method */
+.num { color: #f8d685; }       /* number */
+.df { color: #58a6ff; }       /* dataframe */
+.out { color: #3fb950; }      /* output */
+
+/* OUTPUT BLOCK */
+.output-block {
+  background: #020d04;
+  border: 1px solid rgba(63,185,80,0.2);
+  border-radius: 6px;
+  margin: 8px 0 14px;
+  overflow: hidden;
+}
+.output-label {
+  background: rgba(63,185,80,0.08);
+  border-bottom: 1px solid rgba(63,185,80,0.2);
+  padding: 6px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--green);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.output-block pre {
+  padding: 14px 20px;
+  color: var(--green);
+  font-size: 12px;
+}
+
+/* PRACTICE SECTION */
+.practice {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 28px;
+}
+.practice h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--accent);
+}
+.practice-q {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  font-size: 13.5px;
+  display: flex; gap: 10px; align-items: flex-start;
+}
+.q-num {
+  background: var(--accent);
+  color: #000;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.diff {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 2px;
+}
+.easy { background: rgba(63,185,80,0.1); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.med { background: rgba(240,165,0,0.1); color: var(--accent); border: 1px solid rgba(240,165,0,0.3); }
+.hard { background: rgba(248,81,73,0.1); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+
+/* COMPARISON TABLE */
+.comp-table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 13px; }
+.comp-table th {
+  background: var(--surface2);
+  padding: 10px 14px;
+  text-align: left;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.comp-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(48,54,61,0.5);
+  color: #c9d1d9;
+  vertical-align: top;
+}
+.comp-table tr:hover td { background: rgba(255,255,255,0.02); }
+.comp-table code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--purple);
+}
+
+/* TAGS */
+.tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+.tag-int { background: rgba(240,165,0,0.15); color: var(--accent); border: 1px solid rgba(240,165,0,0.3); }
+.tag-adv { background: rgba(248,81,73,0.12); color: var(--red); border: 1px solid rgba(248,81,73,0.3); }
+.tag-core { background: rgba(63,185,80,0.12); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+.tag-trick { background: rgba(188,140,255,0.12); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+
+/* DIVIDER */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 32px 0;
+}
+
+/* STICKY NAV */
+.sticky-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,17,23,0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 28px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  overflow-x: auto;
+}
+.sticky-nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  white-space: nowrap;
+  padding: 4px 0;
+  transition: color 0.15s;
+}
+.sticky-nav a:hover { color: var(--accent); }
+.nav-logo {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+  margin-right: 8px;
+}
+
+/* MENTAL MODEL */
+.mental-model {
+  background: linear-gradient(135deg, rgba(240,165,0,0.06) 0%, rgba(88,166,255,0.06) 100%);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.mental-model h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<div class="sticky-nav">
+  <span class="nav-logo">pandas</span>
+  <a href="#m1">Mental Model</a>
+  <a href="#m2">Selection</a>
+  <a href="#m3">GroupBy</a>
+  <a href="#m4">Merge/Join</a>
+  <a href="#m5">Reshape</a>
+  <a href="#m6">Apply/Map</a>
+  <a href="#m7">Time Series</a>
+  <a href="#m8">Advanced Ops</a>
+  <a href="#m9">Performance</a>
+  <a href="#m10">Interview Q&A</a>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">🎓 World's Best Teacher Mode — Pandas Masterclass</div>
+  <h1>Master <span>Pandas</span><br>Clear Any DS/DA Round</h1>
+  <p>Every concept taught with intuition first, code second, and interview traps always called out. One consistent dataset throughout. India-relevant examples.</p>
+  <div class="progress-bar">
+    <div class="prog-item active">01 Mental Model</div>
+    <div class="prog-item">02 Selection</div>
+    <div class="prog-item">03 GroupBy</div>
+    <div class="prog-item">04 Merge</div>
+    <div class="prog-item">05 Reshape</div>
+    <div class="prog-item">06 Apply</div>
+    <div class="prog-item">07 Time Series</div>
+    <div class="prog-item">08 Advanced</div>
+    <div class="prog-item">09 Performance</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ===== DATASET SETUP ===== -->
+<div class="module">
+  <div class="mental-model">
+    <h3>📦 Our Dataset — Used Throughout This Entire Guide</h3>
+    <p style="color:#c9d1d9;font-size:14px;margin-bottom:14px">We'll use a realistic Indian e-commerce dataset. Every concept will be taught on THIS data so your brain builds one mental model, not ten scattered ones.</p>
+    <div class="code-block">
+      <div class="code-label">dataset_setup.py <span>Run this first</span></div>
+      <pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Indian E-Commerce Orders Dataset</span>
+<span class="kw">data</span> = {
+    <span class="st">'order_id'</span>:    [<span class="num">1001</span>, <span class="num">1002</span>, <span class="num">1003</span>, <span class="num">1004</span>, <span class="num">1005</span>, <span class="num">1006</span>, <span class="num">1007</span>, <span class="num">1008</span>],
+    <span class="st">'customer'</span>:    [<span class="st">'Ananya'</span>, <span class="st">'Rohan'</span>, <span class="st">'Priya'</span>, <span class="st">'Ananya'</span>, <span class="st">'Rohan'</span>, <span class="st">'Kiran'</span>, <span class="st">'Priya'</span>, <span class="st">'Kiran'</span>],
+    <span class="st">'city'</span>:        [<span class="st">'Mumbai'</span>, <span class="st">'Delhi'</span>, <span class="st">'Bangalore'</span>, <span class="st">'Mumbai'</span>, <span class="st">'Delhi'</span>, <span class="st">'Chennai'</span>, <span class="st">'Bangalore'</span>, <span class="st">'Chennai'</span>],
+    <span class="st">'category'</span>:    [<span class="st">'Electronics'</span>, <span class="st">'Fashion'</span>, <span class="st">'Electronics'</span>, <span class="st">'Books'</span>, <span class="st">'Electronics'</span>, <span class="st">'Fashion'</span>, <span class="st">'Books'</span>, <span class="st">'Electronics'</span>],
+    <span class="st">'amount'</span>:      [<span class="num">15000</span>, <span class="num">2500</span>, <span class="num">45000</span>, <span class="num">800</span>, <span class="num">32000</span>, <span class="num">3200</span>, <span class="num">650</span>, <span class="num">28000</span>],
+    <span class="st">'discount_pct'</span>:[<span class="num">10</span>, <span class="num">20</span>, <span class="num">5</span>, <span class="num">0</span>, <span class="num">15</span>, <span class="num">25</span>, <span class="num">10</span>, <span class="num">8</span>],
+    <span class="st">'rating'</span>:      [<span class="num">4.5</span>, <span class="num">3.8</span>, <span class="num">4.9</span>, <span class="num">4.0</span>, <span class="num">4.2</span>, np.nan, <span class="num">3.5</span>, <span class="num">4.7</span>],
+    <span class="st">'order_date'</span>:  pd.<span class="fn">to_datetime</span>([<span class="st">'2024-01-15'</span>, <span class="st">'2024-01-20'</span>, <span class="st">'2024-02-05'</span>,
+                                    <span class="st">'2024-02-10'</span>, <span class="st">'2024-03-01'</span>, <span class="st">'2024-03-15'</span>,
+                                    <span class="st">'2024-03-20'</span>, <span class="st">'2024-04-01'</span>]),
+    <span class="st">'delivered'</span>:   [<span class="kw">True</span>, <span class="kw">True</span>, <span class="kw">True</span>, <span class="kw">False</span>, <span class="kw">True</span>, <span class="kw">True</span>, <span class="kw">False</span>, <span class="kw">True</span>]
+}
+
+<span class="nm">df</span> = pd.<span class="fn">DataFrame</span>(data)
+<span class="cm"># Remember this df — we use it EVERYWHERE below</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 1 — MENTAL MODEL ===== -->
+<div class="module" id="m1">
+  <div class="module-header">
+    <div class="module-num">01</div>
+    <div>
+      <div class="module-title">The Mental Model — What Pandas Actually Is</div>
+      <div class="module-sub">Before you write a single line, understand what's happening under the hood</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">Index — The Most Misunderstood Thing in Pandas</div>
+      <div class="tags"><span class="tag tag-core">Foundation</span><span class="tag tag-int">Interview Trap</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Analogy</strong>
+        Think of a DataFrame like a spreadsheet with an invisible extra column on the left. That invisible column is the Index. It's not just a row number — it's how Pandas identifies, aligns, and retrieves data with lightning speed. Most bugs in Pandas come from not understanding the index.
+      </div>
+      <p class="explain">Every DataFrame has an index. By default it's 0, 1, 2… but it doesn't have to be. You can set ANY column as the index. When you do operations between two DataFrames, Pandas aligns them ON THE INDEX — not by position. This causes silent bugs that are almost impossible to debug unless you understand this.</p>
+
+      <div class="code-block">
+        <div class="code-label">index_basics.py</div>
+        <pre><span class="cm"># Default index — just numbers</span>
+<span class="kw">print</span>(<span class="nm">df</span>.index)           <span class="cm"># RangeIndex(start=0, stop=8, step=1)</span>
+
+<span class="cm"># Set order_id as index</span>
+<span class="nm">df_indexed</span> = <span class="nm">df</span>.<span class="fn">set_index</span>(<span class="st">'order_id'</span>)
+<span class="kw">print</span>(<span class="nm">df_indexed</span>.index)   <span class="cm"># Int64Index([1001, 1002, ...])</span>
+
+<span class="cm"># Reset index back to default</span>
+<span class="nm">df_reset</span> = <span class="nm">df_indexed</span>.<span class="fn">reset_index</span>()   <span class="cm"># order_id becomes a column again</span>
+
+<span class="cm"># THE ALIGNMENT TRAP — MUST KNOW</span>
+<span class="nm">s1</span> = pd.<span class="fn">Series</span>([<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>], index=[<span class="st">'a'</span>, <span class="st">'b'</span>, <span class="st">'c'</span>])
+<span class="nm">s2</span> = pd.<span class="fn">Series</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>],   index=[<span class="st">'b'</span>, <span class="st">'c'</span>, <span class="st">'d'</span>])
+<span class="kw">print</span>(<span class="nm">s1</span> + <span class="nm">s2</span>)
+<span class="cm"># a    NaN   ← 'a' only in s1, no match in s2
+# b    21.0  ← 20 + 1
+# c    32.0  ← 30 + 2
+# d    NaN   ← 'd' only in s2</span></pre>
+      </div>
+      <div class="interview-alert">
+        <strong>Interview Alert — Asked at Amazon, Flipkart</strong>
+        <ul>
+          <li>"What happens when you add two Series with different indices?" → NaN where indices don't align</li>
+          <li>"When would you set_index() vs keep default?" → When you'll do many label-based lookups</li>
+          <li>"What does reset_index() do?" → Makes current index a column, resets to 0,1,2…</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">Views vs Copies — The Bug That Haunts Everyone</div>
+      <div class="tags"><span class="tag tag-trick">Classic Trap</span><span class="tag tag-int">Interview Trap</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Analogy</strong>
+        A View is like a window into the original data — change the view, you change the original. A Copy is a completely new separate room. The SettingWithCopyWarning is Pandas telling you: "Hey, I'm not sure if you're modifying the original or a copy — be explicit."
+      </div>
+      <div class="code-block">
+        <div class="code-label">views_vs_copies.py</div>
+        <pre><span class="cm"># ❌ WRONG — This might not work as expected</span>
+<span class="nm">electronics</span> = <span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'category'</span>] == <span class="st">'Electronics'</span>]
+<span class="nm">electronics</span>[<span class="st">'amount'</span>] = <span class="nm">electronics</span>[<span class="st">'amount'</span>] * <span class="num">1.1</span>
+<span class="cm"># SettingWithCopyWarning! You might be modifying a copy, not df</span>
+
+<span class="cm"># ✅ CORRECT — Use .copy() explicitly</span>
+<span class="nm">electronics</span> = <span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'category'</span>] == <span class="st">'Electronics'</span>].<span class="fn">copy</span>()
+<span class="nm">electronics</span>[<span class="st">'amount'</span>] = <span class="nm">electronics</span>[<span class="st">'amount'</span>] * <span class="num">1.1</span>
+<span class="cm"># Now you're safely modifying a new DataFrame</span>
+
+<span class="cm"># ✅ ALSO CORRECT — Use .loc for in-place modification</span>
+<span class="nm">df</span>.<span class="fn">loc</span>[<span class="nm">df</span>[<span class="st">'category'</span>] == <span class="st">'Electronics'</span>, <span class="st">'amount'</span>] *= <span class="num">1.1</span></pre>
+      </div>
+      <div class="warning">
+        <strong>Common Mistake That Fails Interviews</strong>
+        Candidates often can't explain WHY SettingWithCopyWarning appears. The answer: chained indexing (df[condition][column]) is ambiguous — Pandas doesn't know if the first [] returned a view or copy. Always use .loc for assignment, or .copy() for a new DataFrame.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 2 — SELECTION ===== -->
+<div class="module" id="m2">
+  <div class="module-header">
+    <div class="module-num">02</div>
+    <div>
+      <div class="module-title">Selection & Filtering</div>
+      <div class="module-sub">.loc vs .iloc — the question every interviewer asks in the first 5 minutes</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">.loc vs .iloc — Once and For All</div>
+      <div class="tags"><span class="tag tag-int">Asked Every Interview</span><span class="tag tag-core">Must Know</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Analogy</strong>
+        .loc is like calling someone by their NAME — "Get me the row named 'Ananya'". .iloc is like calling them by their SEAT NUMBER — "Get me person sitting at position 0". One uses labels, one uses positions. When your index is 0,1,2,3 they look the same — but the moment your index is different, they diverge completely.
+      </div>
+      <table class="comp-table">
+        <tr><th>Feature</th><th>.loc</th><th>.iloc</th></tr>
+        <tr><td>Uses</td><td>Labels / Index names</td><td>Integer positions (0, 1, 2...)</td></tr>
+        <tr><td>Slice end</td><td>Inclusive <code>df.loc[0:3]</code> → rows 0,1,2,3</td><td>Exclusive <code>df.iloc[0:3]</code> → rows 0,1,2</td></tr>
+        <tr><td>Boolean mask</td><td>✅ Supported</td><td>✅ Supported</td></tr>
+        <tr><td>Best for</td><td>Most use cases</td><td>When position matters (e.g. first/last N rows)</td></tr>
+      </table>
+      <div class="code-block">
+        <div class="code-label">loc_vs_iloc.py — On our Orders Dataset</div>
+        <pre><span class="cm"># .loc — label based</span>
+<span class="nm">df</span>.<span class="fn">loc</span>[<span class="num">0</span>]                          <span class="cm"># Row with index label 0 (Ananya's first order)</span>
+<span class="nm">df</span>.<span class="fn">loc</span>[<span class="num">0</span>, <span class="st">'customer'</span>]              <span class="cm"># Single value: 'Ananya'</span>
+<span class="nm">df</span>.<span class="fn">loc</span>[<span class="num">0</span>:<span class="num">3</span>, [<span class="st">'customer'</span>, <span class="st">'amount'</span>]]  <span class="cm"># Rows 0,1,2,3 (INCLUSIVE) — 4 rows</span>
+<span class="nm">df</span>.<span class="fn">loc</span>[<span class="nm">df</span>[<span class="st">'amount'</span>] > <span class="num">10000</span>]         <span class="cm"># Boolean filter</span>
+
+<span class="cm"># .iloc — position based</span>
+<span class="nm">df</span>.<span class="fn">iloc</span>[<span class="num">0</span>]                           <span class="cm"># First row by position</span>
+<span class="nm">df</span>.<span class="fn">iloc</span>[<span class="num">0</span>:<span class="num">3</span>]                         <span class="cm"># Rows 0,1,2 (EXCLUSIVE) — 3 rows</span>
+<span class="nm">df</span>.<span class="fn">iloc</span>[-<span class="num">1</span>]                          <span class="cm"># Last row</span>
+<span class="nm">df</span>.<span class="fn">iloc</span>[<span class="num">0</span>:<span class="num">4</span>, <span class="num">0</span>:<span class="num">3</span>]                    <span class="cm"># First 4 rows, first 3 columns</span>
+
+<span class="cm"># THE KEY TRAP — When index isn't 0,1,2...</span>
+<span class="nm">df2</span> = <span class="nm">df</span>.<span class="fn">set_index</span>(<span class="st">'order_id'</span>)   <span class="cm"># index is now 1001, 1002, 1003...</span>
+<span class="nm">df2</span>.<span class="fn">loc</span>[<span class="num">1001</span>]    <span class="cm"># ✅ Gets order 1001 by label</span>
+<span class="nm">df2</span>.<span class="fn">iloc</span>[<span class="num">0</span>]      <span class="cm"># ✅ Gets first row (also order 1001) by position</span>
+<span class="nm">df2</span>.<span class="fn">iloc</span>[<span class="num">1001</span>]   <span class="cm"># ❌ IndexError — there's no position 1001 (only 8 rows)</span></pre>
+      </div>
+
+      <div class="divider"></div>
+      <p class="explain" style="font-weight:600; color:var(--text)">Advanced Filtering — Beyond Basic Boolean</p>
+      <div class="code-block">
+        <div class="code-label">advanced_filtering.py</div>
+        <pre><span class="cm"># Multiple conditions — use & | ~ (NOT 'and' 'or' 'not')</span>
+<span class="nm">df</span>[((<span class="nm">df</span>[<span class="st">'amount'</span>] > <span class="num">10000</span>) & (<span class="nm">df</span>[<span class="st">'category'</span>] == <span class="st">'Electronics'</span>))]
+
+<span class="cm"># .query() — cleaner syntax, same result</span>
+<span class="nm">df</span>.<span class="fn">query</span>(<span class="st">"amount > 10000 and category == 'Electronics'"</span>)
+<span class="nm">df</span>.<span class="fn">query</span>(<span class="st">"city in ['Mumbai', 'Delhi']"</span>)
+
+<span class="cm"># .isin() — filter by list of values</span>
+<span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'city'</span>].<span class="fn">isin</span>([<span class="st">'Mumbai'</span>, <span class="st">'Delhi'</span>])]
+
+<span class="cm"># .between() — range filter (inclusive both ends)</span>
+<span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'amount'</span>].<span class="fn">between</span>(<span class="num">1000</span>, <span class="num">20000</span>)]
+
+<span class="cm"># .str methods for text filtering</span>
+<span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'customer'</span>].<span class="fn">str</span>.<span class="fn">startswith</span>(<span class="st">'A'</span>)]   <span class="cm"># Only 'Ananya'</span>
+<span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'city'</span>].<span class="fn">str</span>.<span class="fn">contains</span>(<span class="st">'ban'</span>, case=<span class="kw">False</span>)]  <span class="cm"># 'Bangalore'</span>
+
+<span class="cm"># Filter + select columns together</span>
+<span class="nm">df</span>.<span class="fn">loc</span>[<span class="nm">df</span>[<span class="st">'delivered'</span>] == <span class="kw">True</span>, [<span class="st">'customer'</span>, <span class="st">'amount'</span>]]
+
+<span class="cm"># nlargest / nsmallest — top N rows</span>
+<span class="nm">df</span>.<span class="fn">nlargest</span>(<span class="num">3</span>, <span class="st">'amount'</span>)   <span class="cm"># Top 3 highest orders</span>
+<span class="nm">df</span>.<span class="fn">nsmallest</span>(<span class="num">2</span>, <span class="st">'rating'</span>) <span class="cm"># 2 lowest rated orders</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 3 — GROUPBY ===== -->
+<div class="module" id="m3">
+  <div class="module-header">
+    <div class="module-num">03</div>
+    <div>
+      <div class="module-title">GroupBy — The Most Tested Topic in DS Interviews</div>
+      <div class="module-sub">groupby + agg + transform + apply — this alone covers 40% of interview questions</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">GroupBy — Split, Apply, Combine</div>
+      <div class="tags"><span class="tag tag-int">Most Asked</span><span class="tag tag-core">Core</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Mental Model — 3 Steps</strong>
+        Split → Apply → Combine. Imagine physically cutting your DataFrame into piles (Split by city). Doing a calculation on each pile separately (Apply sum to each city pile). Then stacking the results back into one table (Combine). That's all groupby is.
+      </div>
+      <div class="code-block">
+        <div class="code-label">groupby_fundamentals.py</div>
+        <pre><span class="cm"># Basic groupby — total spend per customer</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>)[<span class="st">'amount'</span>].<span class="fn">sum</span>()
+<span class="cm"># customer
+# Ananya    15800
+# Kiran     31200
+# Priya     45650
+# Rohan     34500</span>
+
+<span class="cm"># Multiple aggregations with .agg()</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'category'</span>)[<span class="st">'amount'</span>].<span class="fn">agg</span>([<span class="st">'sum'</span>, <span class="st">'mean'</span>, <span class="st">'count'</span>, <span class="st">'max'</span>])
+
+<span class="cm"># Named aggregations (clean output, interview-ready)</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'category'</span>).<span class="fn">agg</span>(
+    total_revenue = (<span class="st">'amount'</span>, <span class="st">'sum'</span>),
+    avg_order     = (<span class="st">'amount'</span>, <span class="st">'mean'</span>),
+    order_count   = (<span class="st">'order_id'</span>, <span class="st">'count'</span>),
+    avg_rating    = (<span class="st">'rating'</span>, <span class="st">'mean'</span>)
+).<span class="fn">round</span>(<span class="num">2</span>)
+
+<span class="cm"># Multiple group keys</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>([<span class="st">'city'</span>, <span class="st">'category'</span>])[<span class="st">'amount'</span>].<span class="fn">sum</span>()
+
+<span class="cm"># as_index=False — keeps columns flat (SQL-like output)</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>, as_index=<span class="kw">False</span>)[<span class="st">'amount'</span>].<span class="fn">sum</span>()</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">transform() — The Game Changer Most Candidates Don't Know</div>
+      <div class="tags"><span class="tag tag-adv">Advanced</span><span class="tag tag-int">Frequently Asked</span><span class="tag tag-trick">Confusing</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>The Key Difference</strong>
+        groupby().sum() reduces many rows to few rows — output is SMALLER than input. transform() gives back the SAME SHAPE as original — it broadcasts the group result back to every row. This is how you add "group statistics" as a new column without losing rows.
+      </div>
+      <div class="code-block">
+        <div class="code-label">transform_magic.py — The Most Important Distinction</div>
+        <pre><span class="cm"># groupby().sum() — reduces rows (8 rows → 3 rows)</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>)[<span class="st">'amount'</span>].<span class="fn">sum</span>()
+<span class="cm"># Returns 3 rows (one per customer) — CANNOT merge back easily</span>
+
+<span class="cm"># transform() — keeps all 8 rows, broadcasts group sum to each row</span>
+<span class="nm">df</span>[<span class="st">'customer_total'</span>] = <span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>)[<span class="st">'amount'</span>].<span class="fn">transform</span>(<span class="st">'sum'</span>)
+<span class="cm">#    customer   amount  customer_total
+# 0  Ananya     15000   15800   ← Ananya's total (15000 + 800)
+# 1  Rohan       2500   34500   ← Rohan's total
+# 2  Priya      45000   45650   ← Priya's total
+# 3  Ananya       800   15800   ← Same Ananya total
+# ...</span>
+
+<span class="cm"># POWER USE: % contribution of each order to customer's total</span>
+<span class="nm">df</span>[<span class="st">'pct_of_customer_spend'</span>] = (
+    <span class="nm">df</span>[<span class="st">'amount'</span>] / <span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>)[<span class="st">'amount'</span>].<span class="fn">transform</span>(<span class="st">'sum'</span>) * <span class="num">100</span>
+).<span class="fn">round</span>(<span class="num">1</span>)
+
+<span class="cm"># Another power use: z-score within each category</span>
+<span class="nm">df</span>[<span class="st">'amount_zscore'</span>] = <span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'category'</span>)[<span class="st">'amount'</span>].<span class="fn">transform</span>(
+    <span class="kw">lambda</span> <span class="nm">x</span>: (<span class="nm">x</span> - <span class="nm">x</span>.<span class="fn">mean</span>()) / <span class="nm">x</span>.<span class="fn">std</span>()
+)</pre>
+      </div>
+      <div class="interview-alert">
+        <strong>Classic Interview Question — Amazon, Meesho, Razorpay</strong>
+        <ul>
+          <li>"Add a column showing each customer's total spending alongside their individual orders" → transform('sum')</li>
+          <li>"Find orders where amount is above that customer's average" → filter using transform('mean')</li>
+          <li>"Rank orders within each category by amount" → transform + rank()</li>
+        </ul>
+      </div>
+      <div class="code-block">
+        <div class="code-label">filter_with_transform.py</div>
+        <pre><span class="cm"># Find orders above that customer's average spend</span>
+<span class="nm">customer_avg</span> = <span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>)[<span class="st">'amount'</span>].<span class="fn">transform</span>(<span class="st">'mean'</span>)
+<span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'amount'</span>] > <span class="nm">customer_avg</span>]
+
+<span class="cm"># groupby filter() — keep/drop entire groups</span>
+<span class="cm"># Keep only customers who have placed more than 1 order</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>).<span class="fn">filter</span>(<span class="kw">lambda</span> <span class="nm">x</span>: len(<span class="nm">x</span>) > <span class="num">1</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">groupby + apply() — The Swiss Army Knife</div>
+      <div class="tags"><span class="tag tag-adv">Advanced</span></div>
+    </div>
+    <div class="concept-body">
+      <p class="explain">When agg() and transform() aren't enough — when you need custom logic per group — apply() lets you pass a function that receives a mini-DataFrame for each group.</p>
+      <div class="code-block">
+        <div class="code-label">groupby_apply.py</div>
+        <pre><span class="cm"># Top 1 order per customer by amount</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'customer'</span>).<span class="fn">apply</span>(<span class="kw">lambda</span> <span class="nm">x</span>: <span class="nm">x</span>.<span class="fn">nlargest</span>(<span class="num">1</span>, <span class="st">'amount'</span>))
+
+<span class="cm"># Custom function: return orders in top 50% of that category's revenue</span>
+<span class="kw">def</span> <span class="fn">top_half</span>(<span class="nm">group</span>):
+    threshold = <span class="nm">group</span>[<span class="st">'amount'</span>].<span class="fn">quantile</span>(<span class="num">0.5</span>)
+    <span class="kw">return</span> <span class="nm">group</span>[<span class="nm">group</span>[<span class="st">'amount'</span>] >= threshold]
+
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'category'</span>).<span class="fn">apply</span>(top_half).<span class="fn">reset_index</span>(drop=<span class="kw">True</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Practice -->
+  <div class="practice">
+    <h3>🎯 GroupBy Practice — Answer These Before Moving On</h3>
+    <div class="practice-q"><span class="q-num">Q1</span><div>Using our df, find the average discount given per city. <span class="diff easy">Easy</span></div></div>
+    <div class="practice-q"><span class="q-num">Q2</span><div>Find all orders where the amount is MORE than that city's average order amount. Use transform. <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">Q3</span><div>For each category, find the customer who spent the most. Return a clean DataFrame with columns: category, top_customer, total_spend. <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">Q4</span><div>Add a column 'order_rank' that ranks each customer's orders from highest to lowest amount (rank 1 = highest). Customers should be ranked independently. <span class="diff hard">Hard</span></div></div>
+  </div>
+</div>
+
+<!-- ===== MODULE 4 — MERGE ===== -->
+<div class="module" id="m4">
+  <div class="module-header">
+    <div class="module-num">04</div>
+    <div>
+      <div class="module-title">Merge, Join & Concat</div>
+      <div class="module-sub">SQL JOINs in pandas — must be as natural as breathing</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">merge() — The Full Picture</div>
+      <div class="tags"><span class="tag tag-int">SQL Knowledge Test</span><span class="tag tag-core">Core</span></div>
+    </div>
+    <div class="concept-body">
+      <table class="comp-table">
+        <tr><th>how=</th><th>What it does</th><th>SQL Equivalent</th><th>When to use</th></tr>
+        <tr><td><code>'inner'</code></td><td>Only matching rows in BOTH</td><td>INNER JOIN</td><td>When you need guaranteed matches</td></tr>
+        <tr><td><code>'left'</code></td><td>All left rows + matches from right</td><td>LEFT JOIN</td><td>Keep all left, add right info if available</td></tr>
+        <tr><td><code>'right'</code></td><td>All right rows + matches from left</td><td>RIGHT JOIN</td><td>Rarely used (just flip and use left)</td></tr>
+        <tr><td><code>'outer'</code></td><td>All rows from both, NaN where no match</td><td>FULL OUTER JOIN</td><td>Finding what's missing in either table</td></tr>
+        <tr><td><code>'cross'</code></td><td>Every row × every row</td><td>CROSS JOIN</td><td>Combinations, cartesian products</td></tr>
+      </table>
+      <div class="code-block">
+        <div class="code-label">merges.py</div>
+        <pre><span class="cm"># Second dataset for merging — customer details</span>
+<span class="nm">customers</span> = pd.<span class="fn">DataFrame</span>({
+    <span class="st">'customer'</span>: [<span class="st">'Ananya'</span>, <span class="st">'Rohan'</span>, <span class="st">'Priya'</span>, <span class="st">'Vikram'</span>],
+    <span class="st">'tier'</span>:     [<span class="st">'Gold'</span>, <span class="st">'Silver'</span>, <span class="st">'Gold'</span>, <span class="st">'Bronze'</span>],
+    <span class="st">'age'</span>:      [<span class="num">28</span>, <span class="num">34</span>, <span class="num">25</span>, <span class="num">45</span>]
+})
+<span class="cm"># Note: 'Kiran' is in df but NOT in customers
+# 'Vikram' is in customers but NOT in df</span>
+
+<span class="cm"># Inner join — only customers who appear in BOTH</span>
+pd.<span class="fn">merge</span>(<span class="nm">df</span>, <span class="nm">customers</span>, on=<span class="st">'customer'</span>, how=<span class="st">'inner'</span>)
+<span class="cm"># Kiran rows DROPPED — Vikram row DROPPED</span>
+
+<span class="cm"># Left join — all orders, add customer tier if available</span>
+pd.<span class="fn">merge</span>(<span class="nm">df</span>, <span class="nm">customers</span>, on=<span class="st">'customer'</span>, how=<span class="st">'left'</span>)
+<span class="cm"># Kiran rows kept, tier=NaN. Vikram row absent.</span>
+
+<span class="cm"># When column names differ between tables</span>
+pd.<span class="fn">merge</span>(<span class="nm">df</span>, <span class="nm">customers</span>, left_on=<span class="st">'customer'</span>, right_on=<span class="st">'customer_name'</span>)
+
+<span class="cm"># Merge on multiple keys</span>
+pd.<span class="fn">merge</span>(<span class="nm">df</span>, <span class="nm">other_df</span>, on=[<span class="st">'customer'</span>, <span class="st">'city'</span>], how=<span class="st">'inner'</span>)
+
+<span class="cm"># Detect merge quality — ALWAYS do this in real work</span>
+pd.<span class="fn">merge</span>(<span class="nm">df</span>, <span class="nm">customers</span>, on=<span class="st">'customer'</span>, how=<span class="st">'inner'</span>, validate=<span class="st">'many_to_one'</span>)
+<span class="cm"># validate raises error if assumptions are wrong — prevents silent bugs</span>
+
+<span class="cm"># indicator=True — shows where each row came from</span>
+pd.<span class="fn">merge</span>(<span class="nm">df</span>, <span class="nm">customers</span>, on=<span class="st">'customer'</span>, how=<span class="st">'outer'</span>, indicator=<span class="kw">True</span>)
+<span class="cm"># Adds '_merge' column: 'left_only', 'right_only', or 'both'
+# Great for finding unmatched records</span></pre>
+      </div>
+      <div class="interview-alert">
+        <strong>Interview Scenario — "Find customers who placed an order but have no customer profile"</strong>
+        <ul>
+          <li>Left join df with customers, then filter where _merge == 'left_only' (using indicator=True)</li>
+          <li>OR: left join, filter where tier.isna()</li>
+          <li>This is the pandas equivalent of SQL's LEFT JOIN ... WHERE right.col IS NULL</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">concat() — Stacking DataFrames</div>
+      <div class="tags"><span class="tag tag-core">Essential</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>merge vs concat</strong>
+        merge is a horizontal operation — adding more columns (like SQL JOIN). concat is stacking — either adding more rows (axis=0, like SQL UNION) or adding more columns side by side (axis=1).
+      </div>
+      <div class="code-block">
+        <div class="code-label">concat.py</div>
+        <pre><span class="nm">df_q1</span> = <span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'order_date'</span>].dt.month <= <span class="num">3</span>]
+<span class="nm">df_q2</span> = <span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'order_date'</span>].dt.month > <span class="num">3</span>]
+
+<span class="cm"># Stack rows vertically (like UNION ALL)</span>
+<span class="nm">df_full</span> = pd.<span class="fn">concat</span>([<span class="nm">df_q1</span>, <span class="nm">df_q2</span>], ignore_index=<span class="kw">True</span>)
+<span class="cm"># ignore_index=True — resets index to 0,1,2... 
+# Without it, index repeats: 0,1,2,3,0,1 — common bug!</span>
+
+<span class="cm"># Add labels to track source</span>
+pd.<span class="fn">concat</span>([<span class="nm">df_q1</span>, <span class="nm">df_q2</span>], keys=[<span class="st">'Q1'</span>, <span class="st">'Q2'</span>])
+<span class="cm"># Creates MultiIndex showing which quarter each row came from</span>
+
+<span class="cm"># Stack columns horizontally (use merge instead if possible)</span>
+pd.<span class="fn">concat</span>([<span class="nm">df1</span>, <span class="nm">df2</span>], axis=<span class="num">1</span>)</pre>
+      </div>
+      <div class="warning">
+        <strong>Forget ignore_index and get a bug in your interview project</strong>
+        When you concat two DataFrames without ignore_index=True, the index from each keeps its original values. So if both go from 0–3, your result has index 0,1,2,3,0,1,2,3. Then .loc[0] returns TWO rows instead of one. Always use ignore_index=True when stacking rows.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 5 — RESHAPE ===== -->
+<div class="module" id="m5">
+  <div class="module-header">
+    <div class="module-num">05</div>
+    <div>
+      <div class="module-title">Reshaping Data — pivot_table, melt, stack</div>
+      <div class="module-sub">Turn rows into columns and back — the confusion ends here</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">pivot_table() — Excel Pivot in Python</div>
+      <div class="tags"><span class="tag tag-int">EDA Staple</span><span class="tag tag-core">Must Know</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Analogy</strong>
+        Think of pivot_table like a crosstab report. Rows = one category. Columns = another category. Values = what number fills the cells. Aggfunc = how to combine multiple values in one cell.
+      </div>
+      <div class="code-block">
+        <div class="code-label">pivot_table.py</div>
+        <pre><span class="cm"># Total amount per customer per category</span>
+<span class="nm">df</span>.<span class="fn">pivot_table</span>(
+    values =<span class="st">'amount'</span>,
+    index  =<span class="st">'customer'</span>,    <span class="cm"># rows</span>
+    columns=<span class="st">'category'</span>,    <span class="cm"># columns</span>
+    aggfunc=<span class="st">'sum'</span>,
+    fill_value=<span class="num">0</span>           <span class="cm"># NaN → 0 where no orders exist</span>
+)
+<span class="cm"># category    Books  Electronics  Fashion
+# customer
+# Ananya        800        15000        0
+# Kiran           0        28000     3200
+# Priya         650        45000        0
+# Rohan           0        34500     2500</span>
+
+<span class="cm"># Multiple values and aggregations</span>
+<span class="nm">df</span>.<span class="fn">pivot_table</span>(
+    values =[<span class="st">'amount'</span>, <span class="st">'rating'</span>],
+    index  =<span class="st">'city'</span>,
+    aggfunc={<span class="st">'amount'</span>: <span class="st">'sum'</span>, <span class="st">'rating'</span>: <span class="st">'mean'</span>}
+)
+
+<span class="cm"># margins=True — adds row/column totals (like Excel "Grand Total")</span>
+<span class="nm">df</span>.<span class="fn">pivot_table</span>(values=<span class="st">'amount'</span>, index=<span class="st">'city'</span>, columns=<span class="st">'category'</span>,
+              aggfunc=<span class="st">'sum'</span>, fill_value=<span class="num">0</span>, margins=<span class="kw">True</span>)</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">melt() — The Reverse of Pivot (Wide → Long)</div>
+      <div class="tags"><span class="tag tag-adv">Advanced</span><span class="tag tag-trick">Often Confusing</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Wide vs Long Format</strong>
+        Wide format: each city is a separate column. Good for humans to read. Long format: city values are all in one column with a "city" label column. Good for machines and plotting. melt converts wide → long. pivot converts long → wide.
+      </div>
+      <div class="code-block">
+        <div class="code-label">melt.py</div>
+        <pre><span class="cm"># Wide format (what pivot_table gives us)</span>
+<span class="nm">wide_df</span> = <span class="nm">df</span>.<span class="fn">pivot_table</span>(values=<span class="st">'amount'</span>, index=<span class="st">'customer'</span>,
+                           columns=<span class="st">'category'</span>, aggfunc=<span class="st">'sum'</span>, fill_value=<span class="num">0</span>)
+<span class="nm">wide_df</span> = <span class="nm">wide_df</span>.<span class="fn">reset_index</span>()
+
+<span class="cm"># melt() — convert wide back to long</span>
+<span class="nm">long_df</span> = <span class="nm">wide_df</span>.<span class="fn">melt</span>(
+    id_vars   =<span class="st">'customer'</span>,             <span class="cm"># columns to keep as-is</span>
+    value_vars=[<span class="st">'Books'</span>, <span class="st">'Electronics'</span>, <span class="st">'Fashion'</span>],  <span class="cm"># columns to melt</span>
+    var_name  =<span class="st">'category'</span>,            <span class="cm"># name for the "label" column</span>
+    value_name=<span class="st">'total_spend'</span>          <span class="cm"># name for the "value" column</span>
+)
+<span class="cm"># customer   category     total_spend
+# Ananya     Books        800
+# Ananya     Electronics  15000
+# Ananya     Fashion      0
+# ...</span>
+
+<span class="cm"># Long format is what seaborn/plotly prefers for plotting!</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 6 — APPLY/MAP ===== -->
+<div class="module" id="m6">
+  <div class="module-header">
+    <div class="module-num">06</div>
+    <div>
+      <div class="module-title">apply(), map(), applymap() — Know the Difference</div>
+      <div class="module-sub">One question, three tools — interviewers love testing which one you reach for</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">apply vs map vs applymap (now map in newer pandas)</div>
+      <div class="tags"><span class="tag tag-int">Commonly Tested</span><span class="tag tag-trick">Easy to Confuse</span></div>
+    </div>
+    <div class="concept-body">
+      <table class="comp-table">
+        <tr><th>Method</th><th>Works on</th><th>Receives</th><th>Best for</th></tr>
+        <tr><td><code>.map()</code></td><td>Series only</td><td>One element at a time</td><td>Replacing values, simple transforms</td></tr>
+        <tr><td><code>.apply()</code></td><td>Series OR DataFrame</td><td>Element (Series) or row/col (DataFrame)</td><td>Complex custom logic</td></tr>
+        <tr><td><code>.applymap()</code> / <code>.map()</code></td><td>DataFrame element-wise</td><td>One element at a time</td><td>Formatting every cell</td></tr>
+      </table>
+      <div class="code-block">
+        <div class="code-label">apply_map.py</div>
+        <pre><span class="cm"># map() — on Series — replace values or apply function</span>
+<span class="nm">df</span>[<span class="st">'category'</span>].<span class="fn">map</span>({<span class="st">'Electronics'</span>: <span class="st">'Tech'</span>, <span class="st">'Fashion'</span>: <span class="st">'Style'</span>, <span class="st">'Books'</span>: <span class="st">'Read'</span>})
+<span class="nm">df</span>[<span class="st">'amount'</span>].<span class="fn">map</span>(<span class="kw">lambda</span> <span class="nm">x</span>: <span class="st">'High'</span> <span class="kw">if</span> <span class="nm">x</span> > <span class="num">10000</span> <span class="kw">else</span> <span class="st">'Low'</span>)
+
+<span class="cm"># apply() on Series — same as map() but more powerful</span>
+<span class="nm">df</span>[<span class="st">'amount'</span>].<span class="fn">apply</span>(<span class="kw">lambda</span> <span class="nm">x</span>: round(<span class="nm">x</span> * <span class="num">1.18</span>, <span class="num">2</span>))  <span class="cm"># amount with 18% GST</span>
+
+<span class="cm"># apply() on DataFrame — row-wise (axis=1) or column-wise (axis=0)</span>
+<span class="nm">df</span>.<span class="fn">apply</span>(<span class="kw">lambda</span> <span class="nm">row</span>: row[<span class="st">'amount'</span>] * (1 - row[<span class="st">'discount_pct'</span>]/<span class="num">100</span>), axis=<span class="num">1</span>)
+<span class="cm"># axis=1 → function receives each ROW as a Series
+# axis=0 → function receives each COLUMN as a Series</span>
+
+<span class="cm"># PERFORMANCE TIP — avoid apply when vectorization works</span>
+<span class="cm"># ❌ Slow:</span>
+<span class="nm">df</span>[<span class="st">'final_amount'</span>] = <span class="nm">df</span>.<span class="fn">apply</span>(<span class="kw">lambda</span> <span class="nm">r</span>: <span class="nm">r</span>[<span class="st">'amount'</span>] * (1 - <span class="nm">r</span>[<span class="st">'discount_pct'</span>]/<span class="num">100</span>), axis=<span class="num">1</span>)
+<span class="cm"># ✅ Fast (vectorized):</span>
+<span class="nm">df</span>[<span class="st">'final_amount'</span>] = <span class="nm">df</span>[<span class="st">'amount'</span>] * (<span class="num">1</span> - <span class="nm">df</span>[<span class="st">'discount_pct'</span>] / <span class="num">100</span>)
+
+<span class="cm"># np.where — fastest for conditional columns</span>
+<span class="nm">df</span>[<span class="st">'order_size'</span>] = np.<span class="fn">where</span>(<span class="nm">df</span>[<span class="st">'amount'</span>] > <span class="num">10000</span>, <span class="st">'Large'</span>, <span class="st">'Small'</span>)
+
+<span class="cm"># np.select — multiple conditions (best for 3+ conditions)</span>
+conditions = [
+    <span class="nm">df</span>[<span class="st">'amount'</span>] > <span class="num">30000</span>,
+    <span class="nm">df</span>[<span class="st">'amount'</span>].<span class="fn">between</span>(<span class="num">10000</span>, <span class="num">30000</span>),
+    <span class="nm">df</span>[<span class="st">'amount'</span>] < <span class="num">10000</span>
+]
+choices = [<span class="st">'Premium'</span>, <span class="st">'Standard'</span>, <span class="st">'Budget'</span>]
+<span class="nm">df</span>[<span class="st">'segment'</span>] = np.<span class="fn">select</span>(conditions, choices)</pre>
+      </div>
+      <div class="tip">
+        <strong>Golden Rule — Hierarchy of Speed</strong>
+        Vectorized ops (df['a'] + df['b']) → np.where/np.select → .map() → .apply(axis=1) → Python for loop (never). Always think: can I do this without apply? If yes, do that. Interviewers at product companies ask about this explicitly.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 7 — TIME SERIES ===== -->
+<div class="module" id="m7">
+  <div class="module-header">
+    <div class="module-num">07</div>
+    <div>
+      <div class="module-title">Time Series in Pandas</div>
+      <div class="module-sub">dt accessor, resample, rolling — used in almost every real DS project</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">.dt accessor + resample() + rolling()</div>
+      <div class="tags"><span class="tag tag-adv">Advanced</span><span class="tag tag-int">Project Staple</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="code-block">
+        <div class="code-label">time_series.py</div>
+        <pre><span class="cm"># .dt accessor — extract date parts</span>
+<span class="nm">df</span>[<span class="st">'year'</span>]    = <span class="nm">df</span>[<span class="st">'order_date'</span>].dt.year
+<span class="nm">df</span>[<span class="st">'month'</span>]   = <span class="nm">df</span>[<span class="st">'order_date'</span>].dt.month
+<span class="nm">df</span>[<span class="st">'day'</span>]     = <span class="nm">df</span>[<span class="st">'order_date'</span>].dt.day
+<span class="nm">df</span>[<span class="st">'weekday'</span>] = <span class="nm">df</span>[<span class="st">'order_date'</span>].dt.day_name()  <span class="cm"># 'Monday', etc.</span>
+<span class="nm">df</span>[<span class="st">'quarter'</span>] = <span class="nm">df</span>[<span class="st">'order_date'</span>].dt.quarter
+<span class="nm">df</span>[<span class="st">'week'</span>]    = <span class="nm">df</span>[<span class="st">'order_date'</span>].dt.isocalendar().week
+
+<span class="cm"># Set date as index for time series operations</span>
+<span class="nm">ts_df</span> = <span class="nm">df</span>.<span class="fn">set_index</span>(<span class="st">'order_date'</span>)
+
+<span class="cm"># resample() — aggregate by time period (like groupby for dates)</span>
+<span class="nm">ts_df</span>[<span class="st">'amount'</span>].<span class="fn">resample</span>(<span class="st">'M'</span>).<span class="fn">sum</span>()   <span class="cm"># Monthly total revenue</span>
+<span class="nm">ts_df</span>[<span class="st">'amount'</span>].<span class="fn">resample</span>(<span class="st">'W'</span>).<span class="fn">mean</span>()  <span class="cm"># Weekly average order</span>
+<span class="nm">ts_df</span>[<span class="st">'amount'</span>].<span class="fn">resample</span>(<span class="st">'Q'</span>).<span class="fn">agg</span>([<span class="st">'sum'</span>, <span class="st">'count'</span>])  <span class="cm"># Quarterly</span>
+<span class="cm"># Freq codes: 'D'=day, 'W'=week, 'M'=month, 'Q'=quarter, 'Y'=year</span>
+
+<span class="cm"># rolling() — moving window calculations</span>
+<span class="nm">monthly</span> = <span class="nm">ts_df</span>[<span class="st">'amount'</span>].<span class="fn">resample</span>(<span class="st">'M'</span>).<span class="fn">sum</span>()
+<span class="nm">monthly</span>.<span class="fn">rolling</span>(window=<span class="num">3</span>).<span class="fn">mean</span>()   <span class="cm"># 3-month moving average</span>
+<span class="nm">monthly</span>.<span class="fn">rolling</span>(window=<span class="num">3</span>).<span class="fn">std</span>()    <span class="cm"># 3-month rolling std</span>
+
+<span class="cm"># shift() and diff() — lag features for ML</span>
+<span class="nm">monthly</span>.<span class="fn">shift</span>(<span class="num">1</span>)         <span class="cm"># Previous month's value (lag 1)</span>
+<span class="nm">monthly</span>.<span class="fn">diff</span>(<span class="num">1</span>)          <span class="cm"># Change from previous month</span>
+<span class="nm">monthly</span>.<span class="fn">pct_change</span>()     <span class="cm"># % change month-over-month</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 8 — ADVANCED OPS ===== -->
+<div class="module" id="m8">
+  <div class="module-header">
+    <div class="module-num">08</div>
+    <div>
+      <div class="module-title">Advanced Operations</div>
+      <div class="module-sub">cut, qcut, method chaining, pipe, assign — what senior candidates know</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">cut() and qcut() — Binning Data</div>
+      <div class="tags"><span class="tag tag-int">Feature Eng</span><span class="tag tag-adv">Advanced</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>cut vs qcut</strong>
+        cut = you define the bin EDGES (fixed ranges). qcut = you define the number of QUANTILE bins (equal frequency). cut is for "amount 0-10000 = budget", qcut is for "bottom 25% = low spenders".
+      </div>
+      <div class="code-block">
+        <div class="code-label">binning.py</div>
+        <pre><span class="cm"># pd.cut() — fixed boundary bins</span>
+<span class="nm">df</span>[<span class="st">'spend_tier'</span>] = pd.<span class="fn">cut</span>(
+    <span class="nm">df</span>[<span class="st">'amount'</span>],
+    bins   =[<span class="num">0</span>, <span class="num">5000</span>, <span class="num">20000</span>, <span class="num">50000</span>],
+    labels =[<span class="st">'Budget'</span>, <span class="st">'Mid'</span>, <span class="st">'Premium'</span>],
+    right  =<span class="kw">True</span>   <span class="cm"># right-inclusive: (0,5000]</span>
+)
+
+<span class="cm"># pd.qcut() — quantile-based bins (equal frequency)</span>
+<span class="nm">df</span>[<span class="st">'spend_quartile'</span>] = pd.<span class="fn">qcut</span>(
+    <span class="nm">df</span>[<span class="st">'amount'</span>],
+    q     =<span class="num">4</span>,
+    labels=[<span class="st">'Q1'</span>, <span class="st">'Q2'</span>, <span class="st">'Q3'</span>, <span class="st">'Q4'</span>]
+)
+
+<span class="cm"># Use in groupby right away</span>
+<span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'spend_tier'</span>, observed=<span class="kw">True</span>)[<span class="st">'rating'</span>].<span class="fn">mean</span>()</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">Method Chaining + pipe() — Write Code Like a Pro</div>
+      <div class="tags"><span class="tag tag-adv">Advanced</span><span class="tag tag-trick">Impressive in Interviews</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="analogy">
+        <strong>Why Method Chaining?</strong>
+        Instead of creating temp variables at every step (df1, df2, df3...), you chain operations. Your code reads like a story: "take df, filter it, add a column, group it, sort it." One expression. Zero temp variables. Senior data scientists write this way.
+      </div>
+      <div class="code-block">
+        <div class="code-label">method_chaining.py</div>
+        <pre><span class="cm"># ❌ Amateur style — temp variables everywhere</span>
+<span class="nm">df1</span> = <span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'delivered'</span>] == <span class="kw">True</span>]
+<span class="nm">df2</span> = <span class="nm">df1</span>.<span class="fn">copy</span>()
+<span class="nm">df2</span>[<span class="st">'final_amount'</span>] = <span class="nm">df2</span>[<span class="st">'amount'</span>] * (<span class="num">1</span> - <span class="nm">df2</span>[<span class="st">'discount_pct'</span>]/<span class="num">100</span>)
+<span class="nm">df3</span> = <span class="nm">df2</span>.<span class="fn">groupby</span>(<span class="st">'category'</span>)[<span class="st">'final_amount'</span>].<span class="fn">sum</span>().<span class="fn">reset_index</span>()
+<span class="nm">df4</span> = <span class="nm">df3</span>.<span class="fn">sort_values</span>(<span class="st">'final_amount'</span>, ascending=<span class="kw">False</span>)
+
+<span class="cm"># ✅ Pro style — method chaining with .assign()</span>
+result = (
+    <span class="nm">df</span>
+    .<span class="fn">loc</span>[<span class="nm">df</span>[<span class="st">'delivered'</span>] == <span class="kw">True</span>]
+    .<span class="fn">assign</span>(final_amount = <span class="kw">lambda</span> <span class="nm">x</span>: <span class="nm">x</span>[<span class="st">'amount'</span>] * (<span class="num">1</span> - <span class="nm">x</span>[<span class="st">'discount_pct'</span>]/<span class="num">100</span>))
+    .<span class="fn">groupby</span>(<span class="st">'category'</span>)[<span class="st">'final_amount'</span>]
+    .<span class="fn">sum</span>()
+    .<span class="fn">reset_index</span>()
+    .<span class="fn">sort_values</span>(<span class="st">'final_amount'</span>, ascending=<span class="kw">False</span>)
+    .<span class="fn">rename</span>(columns={<span class="st">'final_amount'</span>: <span class="st">'Revenue After Discount'</span>})
+)
+
+<span class="cm"># .pipe() — for custom functions in a chain</span>
+<span class="kw">def</span> <span class="fn">add_gst</span>(<span class="nm">df</span>, rate=<span class="num">0.18</span>):
+    <span class="kw">return</span> <span class="nm">df</span>.<span class="fn">assign</span>(gst_amount=<span class="nm">df</span>[<span class="st">'amount'</span>] * rate)
+
+<span class="kw">def</span> <span class="fn">flag_premium</span>(<span class="nm">df</span>, threshold=<span class="num">20000</span>):
+    <span class="kw">return</span> <span class="nm">df</span>.<span class="fn">assign</span>(is_premium=<span class="nm">df</span>[<span class="st">'amount'</span>] > threshold)
+
+result = (
+    <span class="nm">df</span>
+    .<span class="fn">pipe</span>(add_gst, rate=<span class="num">0.18</span>)
+    .<span class="fn">pipe</span>(flag_premium, threshold=<span class="num">20000</span>)
+)</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">Missing Values — The Complete Playbook</div>
+      <div class="tags"><span class="tag tag-int">Always Asked</span><span class="tag tag-core">Real Data</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="code-block">
+        <div class="code-label">missing_values.py</div>
+        <pre><span class="cm"># Detect — df has NaN in 'rating' column</span>
+<span class="nm">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>()          <span class="cm"># Count NaN per column</span>
+<span class="nm">df</span>.<span class="fn">isnull</span>().<span class="fn">sum</span>() / len(<span class="nm">df</span>) <span class="cm"># % missing per column</span>
+<span class="nm">df</span>[<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">isnull</span>()]  <span class="cm"># Rows with missing rating</span>
+
+<span class="cm"># Drop</span>
+<span class="nm">df</span>.<span class="fn">dropna</span>()                     <span class="cm"># Drop ANY row with NaN</span>
+<span class="nm">df</span>.<span class="fn">dropna</span>(subset=[<span class="st">'rating'</span>])    <span class="cm"># Drop only if 'rating' is NaN</span>
+<span class="nm">df</span>.<span class="fn">dropna</span>(thresh=<span class="num">5</span>)             <span class="cm"># Keep rows with at least 5 non-NaN values</span>
+
+<span class="cm"># Fill</span>
+<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">fillna</span>(<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">mean</span>())       <span class="cm"># Fill with mean</span>
+<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">fillna</span>(<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">median</span>())     <span class="cm"># Fill with median</span>
+<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">fillna</span>(method=<span class="st">'ffill'</span>)           <span class="cm"># Forward fill</span>
+<span class="nm">df</span>[<span class="st">'rating'</span>].<span class="fn">fillna</span>(method=<span class="st">'bfill'</span>)           <span class="cm"># Backward fill</span>
+
+<span class="cm"># Smart fill — fill with group mean (better than global mean)</span>
+<span class="nm">df</span>[<span class="st">'rating'</span>] = <span class="nm">df</span>.<span class="fn">groupby</span>(<span class="st">'category'</span>)[<span class="st">'rating'</span>].<span class="fn">transform</span>(
+    <span class="kw">lambda</span> <span class="nm">x</span>: <span class="nm">x</span>.<span class="fn">fillna</span>(<span class="nm">x</span>.<span class="fn">mean</span>())
+)
+
+<span class="cm"># INTERVIEW QUESTION: Which strategy when?
+# Numerical, random missing → mean/median
+# Time series → ffill/bfill
+# Categorical → mode or 'Unknown'
+# Many missing (>40%) → consider dropping the column</span></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 9 — PERFORMANCE ===== -->
+<div class="module" id="m9">
+  <div class="module-header">
+    <div class="module-num">09</div>
+    <div>
+      <div class="module-title">Performance & Memory Optimization</div>
+      <div class="module-sub">What separates a junior from a senior in one question</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head">
+      <div class="concept-title">dtype optimization + Categorical type</div>
+      <div class="tags"><span class="tag tag-adv">Senior Level</span><span class="tag tag-int">Frequently Asked</span></div>
+    </div>
+    <div class="concept-body">
+      <div class="code-block">
+        <div class="code-label">performance.py</div>
+        <pre><span class="cm"># Check memory usage</span>
+<span class="nm">df</span>.<span class="fn">info</span>(memory_usage=<span class="st">'deep'</span>)
+<span class="nm">df</span>.<span class="fn">memory_usage</span>(deep=<span class="kw">True</span>)
+
+<span class="cm"># Optimize int columns — downcast to smallest int type</span>
+<span class="nm">df</span>[<span class="st">'amount'</span>] = pd.<span class="fn">to_numeric</span>(<span class="nm">df</span>[<span class="st">'amount'</span>], downcast=<span class="st">'integer'</span>)
+<span class="cm"># int64 (8 bytes) → int16 (2 bytes) — 4x memory saving!</span>
+
+<span class="cm"># Categorical dtype — for low-cardinality string columns</span>
+<span class="cm"># 'category' only has 3 unique values — wastes memory as object dtype</span>
+<span class="nm">df</span>[<span class="st">'category'</span>] = <span class="nm">df</span>[<span class="st">'category'</span>].<span class="fn">astype</span>(<span class="st">'category'</span>)
+<span class="nm">df</span>[<span class="st">'city'</span>]     = <span class="nm">df</span>[<span class="st">'city'</span>].<span class="fn">astype</span>(<span class="st">'category'</span>)
+<span class="cm"># Stores strings as integer codes internally — massive memory savings
+# Also speeds up groupby and sort operations!</span>
+
+<span class="cm"># Rule of thumb: if unique values < 50% of total rows → use category</span>
+<span class="kw">for</span> col <span class="kw">in</span> <span class="nm">df</span>.<span class="fn">select_dtypes</span>(include=<span class="st">'object'</span>).columns:
+    <span class="kw">if</span> <span class="nm">df</span>[col].<span class="fn">nunique</span>() / len(<span class="nm">df</span>) < <span class="num">0.5</span>:
+        <span class="nm">df</span>[col] = <span class="nm">df</span>[col].<span class="fn">astype</span>(<span class="st">'category'</span>)
+
+<span class="cm"># Read large CSVs efficiently</span>
+<span class="nm">df</span> = pd.<span class="fn">read_csv</span>(<span class="st">'large_file.csv'</span>,
+    usecols=[<span class="st">'customer'</span>, <span class="st">'amount'</span>, <span class="st">'category'</span>],  <span class="cm"># only needed cols</span>
+    dtype={<span class="st">'category'</span>: <span class="st">'category'</span>, <span class="st">'amount'</span>: <span class="st">'int32'</span>},
+    parse_dates=[<span class="st">'order_date'</span>],
+    chunksize=<span class="num">10000</span>   <span class="cm"># for very large files — process in chunks</span>
+)</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODULE 10 — INTERVIEW Q&A ===== -->
+<div class="module" id="m10">
+  <div class="module-header">
+    <div class="module-num">10</div>
+    <div>
+      <div class="module-title">Real Interview Questions — Pandas Edition</div>
+      <div class="module-sub">40 questions asked at Flipkart, Amazon, Razorpay, CRED, Swiggy, Meesho</div>
+    </div>
+  </div>
+
+  <div class="practice">
+    <h3>🏢 Company-Level Practice Questions — Answer These to Me</h3>
+
+    <div style="margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Conceptual — "Explain" Questions</div>
+    <div class="practice-q"><span class="q-num">C1</span><div>What is the difference between .loc and .iloc? When does it matter which you use? <span class="diff easy">Easy</span></div></div>
+    <div class="practice-q"><span class="q-num">C2</span><div>What is the difference between groupby().agg() and groupby().transform()? Give a real example of when you'd use each. <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">C3</span><div>Why does SettingWithCopyWarning appear? How do you fix it? <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">C4</span><div>When would you use merge(how='left') vs merge(how='inner')? <span class="diff easy">Easy</span></div></div>
+    <div class="practice-q"><span class="q-num">C5</span><div>What is a Categorical dtype and why would you use it? <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">C6</span><div>How is apply() different from map()? Which is faster and why? <span class="diff med">Medium</span></div></div>
+
+    <div style="margin:16px 0 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase">Coding — Write the Code</div>
+    <div class="practice-q"><span class="q-num">P1</span><div>Find the second highest order amount per category. <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">P2</span><div>Add a column showing the cumulative sum of amount per customer, ordered by order_date. <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">P3</span><div>Find customers who have ordered in every category (Books, Electronics, Fashion). <span class="diff hard">Hard</span></div></div>
+    <div class="practice-q"><span class="q-num">P4</span><div>Create a cohort: for each customer, was their first order delivered? Output: customer, first_order_date, first_order_delivered. <span class="diff hard">Hard</span></div></div>
+    <div class="practice-q"><span class="q-num">P5</span><div>Find the month with highest revenue. Then find the top customer in that month. <span class="diff med">Medium</span></div></div>
+    <div class="practice-q"><span class="q-num">P6</span><div>Pivot the data to show each customer's spend per month (rows=customer, columns=month). <span class="diff hard">Hard</span></div></div>
+    <div class="practice-q"><span class="q-num">P7</span><div>For each customer, compute the % change in spending from their first to last order. <span class="diff hard">Hard</span></div></div>
+    <div class="practice-q"><span class="q-num">P8</span><div>Without using apply(), add a column 'tier': "Gold" if amount > 20000, "Silver" if 5000–20000, "Bronze" otherwise. <span class="diff med">Medium</span></div></div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div style="margin-top:60px;padding:32px 0;border-top:1px solid var(--border);text-align:center">
+  <p style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:1px">NITK SURATHKAL · MINING ENGINEERING → DATA SCIENCE · 25LPA+ MISSION</p>
+  <p style="margin-top:8px;color:var(--muted);font-size:13px">Answer the practice questions. Come back and explain them. That's how confidence is built — not by reading, but by doing.</p>
+</div>
+
+</div>
+</body>
+</html>
